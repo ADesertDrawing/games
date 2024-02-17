@@ -6,7 +6,7 @@ by A Desert Drawing
 
 let circle = {
     x: 250,
-    y: 0,
+    y: -100,
     size: 200,
     vx: 0,
     vy: 1
