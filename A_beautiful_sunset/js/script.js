@@ -4,36 +4,25 @@ by A Desert Drawing
 */
 "use strict";
 
-let topR;
-let topG;
-let topB;
-
-let bottomR;
-let bottomG;
-let bottomB;
+let circle = {
+    x: 250,
+    y: 0,
+    size: 200,
+    vx: 0,
+    vy: 1
+};
 
 function setup() {
-    createCanvas(windowWidth, windowHeight);
-    noSmooth();
+    createCanvas(500, 500);
 
-    topR = 255;
-    topG = 0;
-    topB = 0;
-
-    bottomR = 0;
-    bottomG = 0;
-    bottomB = 255;
 }
 
 function draw() {
-    background(220);
-
-    const topColor = color(topR, topG, topB);
-    const bottomColor = color(bottomR, bottomG, bottomB);
-
-    for (let y = 0; y < height; y++) {
-        const lineColor = lerpColor(topColor, bottomColor, y / height);
-        stroke(lineColor);
-        line(0, y, width, y);
-    }
+    background(50, 100, 200);
+    circle.x = circle.x + circle.vx;
+    circle.y = circle.y + circle.vy;
+    noStroke();
+    fill(200, 200, 50);
+    ellipse(circle.x, circle.y, circle.size);
 }
+
