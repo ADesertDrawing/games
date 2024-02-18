@@ -9,7 +9,10 @@ let circle = {
     y: -100,
     size: 200,
     vx: 0,
-    vy: 1
+    vy: 1,
+    r: 255,
+    g: 255,
+    b: 0
 };
 
 function setup() {
@@ -22,7 +25,11 @@ function draw() {
     circle.x = circle.x + circle.vx;
     circle.y = circle.y + circle.vy;
     noStroke();
-    fill(200, 200, 50);
+    fill(circle.r, circle.g, circle.b);
     ellipse(circle.x, circle.y, circle.size);
+    //Turn sun from yellow to red as it falls
+    circle.g = circle.g - 0.3;
+
 }
+
 
