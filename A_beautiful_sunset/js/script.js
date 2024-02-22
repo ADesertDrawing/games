@@ -83,8 +83,10 @@ function sunset() {
     push();
     noStroke();
     sky.r = sky.r - 0.01;
+    // sky.r = sky.r / 1.002;
+    console.log(sky.r);
     sky.g = sky.g - 0.4;
-    sky.b = sky.b - 0.4;
+    sky.b = sky.b - 0.5;
     pop();
 }
 
@@ -98,9 +100,28 @@ function night() {
 
 function sunrise() {
     push();
-    background(0);
-    text(`Sunrise goes here`, width / 2, height / 2);
+
+    circle.x = circle.x - circle.vx;
+    circle.y = circle.y - circle.vy;
+    noStroke();
+    fill(circle.r, circle.g, circle.b);
+    ellipse(circle.x, circle.y, circle.size);
+    //Turn sun from red to yellow as it rises
+    circle.g = circle.g + 0.4;
     pop();
+
+    // sky.r = 0, sky.g = 0, sky.b = 0;
+
+    // push();
+
+
+    sky.r = sky.r + 0.01;
+    sky.r = constrain(sky.r, 0, 50);
+    sky.g = sky.g + 0.4;
+    sky.g = constrain(sky.g, 0, 100);
+    sky.b = sky.b + 1;
+    sky.b = constrain(sky.b, 0, 200);
+    // pop();
 }
 
 function changeState() {
