@@ -31,14 +31,17 @@ let sky = {
 
 function setup() {
     createCanvas(500, 500);
-    setInterval(changeState, 5000);
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    fill(255);
+    setInterval(changeState, 12000);
 
 }
 
 function draw() {
     background(sky.r, sky.g, sky.b);
     if (state === `day`) {
-        day();
+        dayTime();
         console.log(`day`);
     }
     else if (state === `sunset`) {
@@ -55,16 +58,14 @@ function draw() {
     }
 }
 
-function day() {
+function dayTime() {
+    push();
     sky.r = 50, sky.g = 100, sky.b = 200;
-    background(50, 100, 200);
-    //  push();
+    background(sky.r, sky.g, sky.b);
+    text(`Ah, you missed the sunrise`, width / 2, height / 2 - 150);
+    text(`They said it was beautiful`, width / 2, height / 2 + 150);
 
-    fill(255);
-    textSize(20);
-    textAlign(CENTER, CENTER);
-    text(`Ah, you missed the sunrise`, width / 2, height / 2);
-    // pop();
+    pop();
 }
 
 function sunset() {
@@ -90,21 +91,14 @@ function sunset() {
 function night() {
     push();
     background(0);
-
-    fill(255);
-    textSize(20);
-    textAlign(CENTER, CENTER);
-    text(`Ah, you missed the sunset`, width / 2, height / 2);
+    text(`Ah, you missed the sunset`, width / 2, height / 2 - 150);
+    text(`They said it was beautiful`, width / 2, height / 2 + 150);
     pop();
 }
 
 function sunrise() {
     push();
     background(0);
-
-    fill(255);
-    textSize(20);
-    textAlign(CENTER, CENTER);
     text(`Sunrise goes here`, width / 2, height / 2);
     pop();
 }
