@@ -11,7 +11,7 @@ let config = {
     physics: {
         default: `arcade`
     },
-    scene: [Play]
+    scene: [Boot, Play]
 };
 
 let game = new Phaser.Game(config);
@@ -36,19 +36,6 @@ let state = `personS`; //Start facing the front (South - can be N,S,E,W,NE,SE et
 //the next one, so we can have two pressed at once (diagonals)
 let pressedKeys = {};
 
-function preload() {
-    //Preloading the player movement images
-    leftLeft = loadImage('assets/images/personW.png');
-    leftBack = loadImage('assets/images/personNW.png');
-    middleBack = loadImage('assets/images/personN.png');
-    rightBack = loadImage('assets/images/personNE.png');
-    rightRight = loadImage('assets/images/personE.png');
-    rightFront = loadImage('assets/images/personSE.png');
-    middleFront = loadImage('assets/images/personS.png');
-    leftFront = loadImage('assets/images/personSW.png');
-
-
-}
 function setup() {
     createCanvas(800, 800);
     person = new Person(width / 2, height / 2);
