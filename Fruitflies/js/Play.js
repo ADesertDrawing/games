@@ -9,7 +9,7 @@ class Play extends Phaser.Scene {
     player;
 
     create() {
-        //   this.player = this.add.sprite(400, 300, `person`);
+
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
@@ -40,6 +40,24 @@ class Play extends Phaser.Scene {
             frameRate: 12,
             repeat: -1
         });
+        this.anims.create({
+            key: 'upright',
+            frames: this.anims.generateFrameNumbers('person', { start: 5, end: 5 }),
+            frameRate: 12,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'downright',
+            frames: this.anims.generateFrameNumbers('person', { start: 7, end: 7 }),
+            frameRate: 12,
+            repeat: -1
+        });
+        this.anims.create({
+            key: 'upleft',
+            frames: this.anims.generateFrameNumbers('person', { start: 3, end: 3 }),
+            frameRate: 12,
+            repeat: -1
+        });
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
             .setCollideWorldBounds(true)
@@ -50,6 +68,8 @@ class Play extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
     }
+
+
     update() {
         const { left, right, up, down } = this.cursors;
 
@@ -82,6 +102,18 @@ class Play extends Phaser.Scene {
         }
         else if (y > 0) {
             this.player.play('down', true);
+        }
+        if (x < 0 && y > 0) {
+            this.player.play('downleft', true);
+        }
+        if (x > 0 && y < 0) {
+            this.player.play('upright', true);
+        }
+        if (x > 0 && y > 0) {
+            this.player.play('downright', true);
+        }
+        if (x < 0 && y < 0) {
+            this.player.play('upleft', true);
         }
 
     }
