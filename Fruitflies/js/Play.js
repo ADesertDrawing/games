@@ -9,7 +9,7 @@ class Play extends Phaser.Scene {
     player;
 
     create() {
-
+        //Creating the player animations to face the 8 directions depending on direction of travel
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
@@ -91,6 +91,7 @@ class Play extends Phaser.Scene {
         const { x } = this.player.body.velocity;
         const { y } = this.player.body.velocity;
 
+        //Up, down left right movement
         if (x < 0) {
             this.player.play('left', true);
         }
@@ -103,6 +104,7 @@ class Play extends Phaser.Scene {
         else if (y > 0) {
             this.player.play('down', true);
         }
+        //Diagonal movement
         if (x < 0 && y > 0) {
             this.player.play('downleft', true);
         }
