@@ -7,6 +7,7 @@ class Play extends Phaser.Scene {
 
     cursors;
     player;
+    fruitfly;
 
     create() {
         //Creating the player animations to face the 8 directions depending on direction of travel
