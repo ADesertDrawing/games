@@ -7,10 +7,11 @@ class Play extends Phaser.Scene {
 
     cursors;
     player;
-    fruitfly;
+    people;
 
     create() {
-        //Creating the player animations to face the 8 directions depending on direction of travel
+        //Creating the player animations to face the 8 directions 
+        //depending on direction of travel
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
