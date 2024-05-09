@@ -84,7 +84,7 @@ class Play extends Phaser.Scene {
         // this.view.setOrigin(this.player.x, this.player.y);
         let x = this.player.x;
         let y = this.player.y;
-        this.view = this.physics.add.sprite(x, y, `view`);
+        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.5);
 
     }
 
@@ -120,11 +120,13 @@ class Play extends Phaser.Scene {
         //Up, down left right movement
         if (x < 0) {
             this.player.play('left', true);
-            this.view.rotation = 25;
+            this.view.rotation = 1.5;
+
 
         }
         else if (x > 0) {
             this.player.play('right', true);
+            this.view.rotation = -1.5;
         }
         if (y < 0) {
             this.player.play('up', true);
