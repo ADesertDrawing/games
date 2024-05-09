@@ -92,8 +92,8 @@ class Play extends Phaser.Scene {
     update() {
 
         //Make the view triangle follow the position of the player
-        this.view.x = this.player.x + 2;
-        this.view.y = this.player.y - 50;
+        this.view.x = this.player.x;
+        this.view.y = this.player.y + 145;
 
 
 
@@ -120,7 +120,8 @@ class Play extends Phaser.Scene {
         //Up, down left right movement
         if (x < 0) {
             this.player.play('left', true);
-            this.view.rotation = 90;
+            this.view.rotation = 25;
+
         }
         else if (x > 0) {
             this.player.play('right', true);
