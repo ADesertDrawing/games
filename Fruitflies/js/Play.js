@@ -9,6 +9,7 @@ class Play extends Phaser.Scene {
     player;
     people;
     view;
+    facing;
 
     create() {
         //Creating the player animations to face the 8 directions 
@@ -17,49 +18,57 @@ class Play extends Phaser.Scene {
             key: 'right',
             frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `East`
         });
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('person', { start: 2, end: 2 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `West`
         });
         this.anims.create({
             key: 'up',
             frames: this.anims.generateFrameNumbers('person', { start: 4, end: 4 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `North`
         });
         this.anims.create({
             key: 'down',
             frames: this.anims.generateFrameNumbers('person', { start: 0, end: 0 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `South`
         });
         this.anims.create({
             key: 'downleft',
             frames: this.anims.generateFrameNumbers('person', { start: 1, end: 1 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `SouthWest`
         });
         this.anims.create({
             key: 'upright',
             frames: this.anims.generateFrameNumbers('person', { start: 5, end: 5 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `NorthEast`
         });
         this.anims.create({
             key: 'downright',
             frames: this.anims.generateFrameNumbers('person', { start: 7, end: 7 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `SouthEast`
         });
         this.anims.create({
             key: 'upleft',
             frames: this.anims.generateFrameNumbers('person', { start: 3, end: 3 }),
             frameRate: 12,
-            repeat: -1
+            repeat: -1,
+            facing: `NorthWest`
         });
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
@@ -81,6 +90,13 @@ class Play extends Phaser.Scene {
 
 
     update() {
+
+        //Make the view triangle follow the position of the player
+        this.view.x = this.player.x + 2;
+        this.view.y = this.player.y - 50;
+
+
+
         const { left, right, up, down } = this.cursors;
 
         this.player.setVelocity(0, 0);
@@ -104,6 +120,7 @@ class Play extends Phaser.Scene {
         //Up, down left right movement
         if (x < 0) {
             this.player.play('left', true);
+            this.view.rotation = 90;
         }
         else if (x > 0) {
             this.player.play('right', true);
@@ -127,9 +144,7 @@ class Play extends Phaser.Scene {
         if (x < 0 && y < 0) {
             this.player.play('upleft', true);
         }
-        //Make the view triangle follow the position of the player
-        this.view.x = this.player.x;
-        this.view.y = this.player.y;
+
     }
 
 }
