@@ -7,20 +7,23 @@ class Boot extends Phaser.Scene {
 
     preload() {
 
-        //Spritesheet for player
+        //Load the spritesheet for player
         this.load.spritesheet('person', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });
 
-        this.load.on(`complete`, () => {
-            this.scene.start(`play`);
-        });
-        this.load.image('People', 'assets/images/persongrey.png', { frameWidth: 50, frameHeight: 94 });
+        //Load the spritesheets for NPCs
+        this.load.image('people', 'assets/images/persongrey.png', { frameWidth: 50, frameHeight: 94 });
 
+        //Load the player view/perspective triangle
+        this.load.image(`view`, `assets/images/view.png`,);
+        //Move to the Play scene when these are loaded
         this.load.on(`complete`, () => {
             this.scene.start(`play`);
         });
+
     }
 
     create() {
+        //Add Loading text
         let style = {
             fontFamily: 'sans-serif',
             fontSize: `40px`,

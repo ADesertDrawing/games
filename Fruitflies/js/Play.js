@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
     cursors;
     player;
     people;
+    view;
 
     create() {
         //Creating the player animations to face the 8 directions 
@@ -69,6 +70,13 @@ class Play extends Phaser.Scene {
 
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        //Adding the player view triangle
+        // this.view = this.add.image(this.player.x, this.player.y, `view`);
+        // this.view.setOrigin(this.player.x, this.player.y);
+        let x = this.player.x;
+        let y = this.player.y;
+        this.view = this.physics.add.sprite(x, y, `view`);
+
     }
 
 
@@ -119,7 +127,9 @@ class Play extends Phaser.Scene {
         if (x < 0 && y < 0) {
             this.player.play('upleft', true);
         }
-
+        //Make the view triangle follow the position of the player
+        this.view.x = this.player.x;
+        this.view.y = this.player.y;
     }
 
 }
