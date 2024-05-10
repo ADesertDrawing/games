@@ -84,7 +84,7 @@ class Play extends Phaser.Scene {
         // this.view.setOrigin(this.player.x, this.player.y);
         let x = this.player.x;
         let y = this.player.y;
-        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, -0.25);
+        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0);
 
     }
 
@@ -93,7 +93,7 @@ class Play extends Phaser.Scene {
 
         //Make the view triangle follow the position of the player
         this.view.x = this.player.x;
-        this.view.y = this.player.y;
+        this.view.y = this.player.y + 45;
 
 
 
