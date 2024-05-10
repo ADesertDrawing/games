@@ -84,7 +84,7 @@ class Play extends Phaser.Scene {
         // this.view.setOrigin(this.player.x, this.player.y);
         let x = this.player.x;
         let y = this.player.y;
-        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.5);
+        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, -0.25);
 
     }
 
@@ -93,7 +93,7 @@ class Play extends Phaser.Scene {
 
         //Make the view triangle follow the position of the player
         this.view.x = this.player.x;
-        this.view.y = this.player.y + 145;
+        this.view.y = this.player.y;
 
 
 
@@ -121,8 +121,6 @@ class Play extends Phaser.Scene {
         if (x < 0) {
             this.player.play('left', true);
             this.view.rotation = 1.5;
-
-
         }
         else if (x > 0) {
             this.player.play('right', true);
@@ -130,22 +128,29 @@ class Play extends Phaser.Scene {
         }
         if (y < 0) {
             this.player.play('up', true);
+            this.view.rotation = 3.15;
+
         }
         else if (y > 0) {
             this.player.play('down', true);
+            this.view.rotation = 0;
         }
         //Diagonal movement
         if (x < 0 && y > 0) {
             this.player.play('downleft', true);
+            this.view.rotation = 0.75;
         }
         if (x > 0 && y < 0) {
             this.player.play('upright', true);
+            this.view.rotation = -2.25;
         }
         if (x > 0 && y > 0) {
             this.player.play('downright', true);
+            this.view.rotation = -0.75;
         }
         if (x < 0 && y < 0) {
             this.player.play('upleft', true);
+            this.view.rotation = 2.25;
         }
 
     }
