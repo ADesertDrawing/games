@@ -4,14 +4,28 @@ class Play extends Phaser.Scene {
             key: `play`
         });
     }
-
+    view;
     cursors;
     player;
     people;
-    view;
-    facing;
+
 
     create() {
+
+        this.playerAnimation();
+
+        this.viewAnimation();
+
+    }
+
+    viewAnimation() {
+        //Adding the player view triangle
+        let x = this.player.x;
+        let y = this.player.y;
+        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0);
+    }
+
+    playerAnimation() {
         //Creating the player animations to face the 8 directions 
         //depending on direction of travel
         this.anims.create({
@@ -19,56 +33,56 @@ class Play extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
             frameRate: 12,
             repeat: -1,
-            facing: `East`
+
         });
         this.anims.create({
             key: 'left',
             frames: this.anims.generateFrameNumbers('person', { start: 2, end: 2 }),
             frameRate: 12,
             repeat: -1,
-            facing: `West`
+
         });
         this.anims.create({
             key: 'up',
             frames: this.anims.generateFrameNumbers('person', { start: 4, end: 4 }),
             frameRate: 12,
             repeat: -1,
-            facing: `North`
+
         });
         this.anims.create({
             key: 'down',
             frames: this.anims.generateFrameNumbers('person', { start: 0, end: 0 }),
             frameRate: 12,
             repeat: -1,
-            facing: `South`
+
         });
         this.anims.create({
             key: 'downleft',
             frames: this.anims.generateFrameNumbers('person', { start: 1, end: 1 }),
             frameRate: 12,
             repeat: -1,
-            facing: `SouthWest`
+
         });
         this.anims.create({
             key: 'upright',
             frames: this.anims.generateFrameNumbers('person', { start: 5, end: 5 }),
             frameRate: 12,
             repeat: -1,
-            facing: `NorthEast`
+
         });
         this.anims.create({
             key: 'downright',
             frames: this.anims.generateFrameNumbers('person', { start: 7, end: 7 }),
             frameRate: 12,
             repeat: -1,
-            facing: `SouthEast`
+
         });
         this.anims.create({
             key: 'upleft',
             frames: this.anims.generateFrameNumbers('person', { start: 3, end: 3 }),
             frameRate: 12,
             repeat: -1,
-            facing: `NorthWest`
+
         });
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
@@ -78,16 +92,7 @@ class Play extends Phaser.Scene {
 
 
         this.cursors = this.input.keyboard.createCursorKeys();
-
-        //Adding the player view triangle
-        // this.view = this.add.image(this.player.x, this.player.y, `view`);
-        // this.view.setOrigin(this.player.x, this.player.y);
-        let x = this.player.x;
-        let y = this.player.y;
-        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0);
-
     }
-
 
     update() {
 
