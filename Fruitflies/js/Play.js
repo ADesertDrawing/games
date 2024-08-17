@@ -11,9 +11,9 @@ class Play extends Phaser.Scene {
 
 
     create() {
+        this.cursors = this.input.keyboard.createCursorKeys();
 
         this.playerAnimation();
-
         this.viewAnimation();
 
     }
@@ -28,6 +28,8 @@ class Play extends Phaser.Scene {
     playerAnimation() {
         //Creating the player animations to face the 8 directions 
         //depending on direction of travel
+
+
         this.anims.create({
             key: 'right',
             frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
@@ -90,8 +92,8 @@ class Play extends Phaser.Scene {
             .setDrag(100)
             .setMaxVelocity(200, 200)
 
+        this.player.depth = 100;
 
-        this.cursors = this.input.keyboard.createCursorKeys();
     }
 
     update() {
