@@ -10,16 +10,18 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
         this.setPushable(false);
         this.setBounce(0.5, 0.5);
-        this.setDrag(0, 0);
+        this.setDrag(-10, -10);
         this.setVelocity(100, 100);
     }
 
 
     create() {
         super.create();
+
     }
 
     update() {
+
     }
 
 

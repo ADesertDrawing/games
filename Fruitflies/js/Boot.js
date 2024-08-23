@@ -13,7 +13,7 @@ class Boot extends Phaser.Scene {
         this.load.spritesheet('person', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });
 
         //Load the spritesheets for NPCs
-        this.load.spritesheet('people', 'assets/images/persongrey.png', { frameWidth: 50, frameHeight: 94 });
+        this.load.spritesheet('people', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });
 
         //Move to the Play scene when these are loaded
         this.load.on(`complete`, () => {
