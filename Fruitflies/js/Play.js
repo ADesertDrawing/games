@@ -4,19 +4,36 @@ class Play extends Phaser.Scene {
             key: `play`
         });
     }
-    view;
-    cursors;
-    player;
-    people;
-
 
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.playerAnimation();
         this.viewAnimation();
+        //this.peopleAnimation();
+
 
     }
+    //the NPCs appearing randomly and wandering about
+    // peopleAnimation() {
+    //     this.people = this.physics.add.group({
+    //         key: `person`,
+    //         quantity: 10,
+    //         collideWorldBounds: true,
+    //         velocityX: 100,
+    //         velocityY: 100,
+    //         //no decelleration (doesn't seem to have an effect)
+    //         // dragX: 0,
+    //         // dragY: 0,
+    //         bounceX: 0.5,
+    //         bounceY: 0.5,
+    //         //this didn't work
+    //         // depth: (`y`)
+
+    //     });
+    // Choosing a random point in the canvas and popping a person in there
+    //     Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
+    // }
 
     viewAnimation() {
         //Adding the player view triangle
@@ -102,7 +119,8 @@ class Play extends Phaser.Scene {
         this.view.x = this.player.x;
         this.view.y = this.player.y + 45;
 
-
+        //  this didn't work
+        // this.people.sortProperty = 'y';
 
         const { left, right, up, down } = this.cursors;
 
