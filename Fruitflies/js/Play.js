@@ -10,30 +10,22 @@ class Play extends Phaser.Scene {
 
         this.playerAnimation();
         this.viewAnimation();
-        //this.peopleAnimation();
+        this.peopleAnimation();
+    }
 
+    //the NPCs appearing randomly and wandering about
+    peopleAnimation() {
+        this.people = this.physics.add.group();
+        for (let i = 0; i < 10; i++) {
+            const person = new Person(this, 100, 100);
+            this.people.add(person);
+            person.setup();
+        }
+        // Choosing a random point in the canvas and popping a person in there
+        Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
 
     }
-    //the NPCs appearing randomly and wandering about
-    // peopleAnimation() {
-    //     this.people = this.physics.add.group({
-    //         key: `person`,
-    //         quantity: 10,
-    //         collideWorldBounds: true,
-    //         velocityX: 100,
-    //         velocityY: 100,
-    //         //no decelleration (doesn't seem to have an effect)
-    //         // dragX: 0,
-    //         // dragY: 0,
-    //         bounceX: 0.5,
-    //         bounceY: 0.5,
-    //         //this didn't work
-    //         // depth: (`y`)
 
-    //     });
-    // Choosing a random point in the canvas and popping a person in there
-    //     Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
-    // }
 
     viewAnimation() {
         //Adding the player view triangle
@@ -114,6 +106,8 @@ class Play extends Phaser.Scene {
     }
 
     update() {
+
+        // console.log(this.p.x, this.p.y)
 
         //Make the view triangle follow the position of the player
         this.view.x = this.player.x;
