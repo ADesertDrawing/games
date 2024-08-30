@@ -25,6 +25,7 @@ class Play extends Phaser.Scene {
         // Choosing a random point in the canvas and popping a person in there
         Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
         this.physics.add.collider(this.people, this.people);
+
     }
 
 

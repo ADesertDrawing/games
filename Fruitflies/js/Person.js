@@ -8,10 +8,13 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
     setup() {
         this.setCollideWorldBounds(true);
-        this.setPushable(false);
-        this.setBounce(0.5, 0.5);
+        // this.setPushable(true);
+        // this.setBounce(0.5, 0.5);
         this.setDrag(-10, -10);
         this.setVelocity(100, 100);
+
+
+
     }
 
 
@@ -21,7 +24,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-
+        this.person.depth = this.person.y;
     }
 
 
