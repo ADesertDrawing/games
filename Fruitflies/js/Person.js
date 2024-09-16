@@ -10,9 +10,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
         // this.setPushable(true);
         // this.setBounce(0.5, 0.5);
-        this.setDrag(-10, -10);
-        this.setVelocity(100, 100);
-
+        // this.setDrag(-10, -10);
+        // this.setDepth(this.y);
+        let velocities = [0, 25, 50, 75, 100, 125, 150, 175, 200];
 
 
     }
@@ -20,11 +20,16 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
     create() {
         super.create();
+        let randomXVelocity = random(velocities);
+        let randomYVelocity = random(velocities);
+
 
     }
 
     update() {
-        this.person.depth = this.person.y;
+
+        this.setVelocity(this.randomXVelocity, this.randomYVelocity);
+        //  this.person.y = this.person.depth;
     }
 
 
