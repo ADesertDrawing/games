@@ -31,9 +31,11 @@ class Play extends Phaser.Scene {
 
     viewAnimation() {
         //Adding the player view triangle
+
         let x = this.player.x;
         let y = this.player.y;
-        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0);
+        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0).setDepth(0);
+        //this.view.depth = this.view.y - 1;
     }
 
     playerAnimation() {
@@ -103,7 +105,7 @@ class Play extends Phaser.Scene {
             .setDrag(100)
             .setMaxVelocity(200, 200)
 
-        //     this.player.depth = this.player.y;
+        this.player.depth = this.player.y;
         //setDepth(this.player.y);
 
     }
