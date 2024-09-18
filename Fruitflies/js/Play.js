@@ -105,14 +105,14 @@ class Play extends Phaser.Scene {
             .setDrag(100)
             .setMaxVelocity(200, 200)
 
-        this.player.depth = this.player.y;
+
         //setDepth(this.player.y);
 
     }
 
     update() {
 
-
+        this.player.depth = this.player.y;
 
         // console.log(this.p.x, this.p.y)
 
