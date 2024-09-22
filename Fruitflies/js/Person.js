@@ -4,7 +4,6 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, "people", 0);
         scene.add.existing(this)
         scene.physics.add.existing(this)
-
     }
 
     setup() {
@@ -14,28 +13,26 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         // this.setDrag(-10, -10);
         // this.setDepth(this.y);
         this.setVelocity(100, -100);
-
-
+        this.changeDirection();
     }
 
 
     create() {
-
         super.create();
-
-        this.changeDirection();
-
     }
 
     changeDirection() {
-        // Multiple x and y by either -1, 0, or 1 to change direction (or possibly not)
-        this.velocity.x *= Phaser.Utils.Array.GetRandom([-1, 0, 1]);
-        this.velocity.y *= Phaser.Utils.Array.GetRandom([-1, 0, 1]);
+        console.log(this);
+        // Multiply x and y by either -1, 0, or 1 to change direction (or possibly not)
+        const newVX = Phaser.Utils.Array.GetRandom([-100, 0, 100]);
+        const newVY = Phaser.Utils.Array.GetRandom([-100, 0, 100]);
+        this.setVelocity(newVX, newVY);
         // Wait 2 seconds then do it again
         this.scene.time.addEvent({
-            delay: Math.random() * 2000, // Wait two seconds
-            callback: changeDirection,
-            callbackContext: this
+            delay: 2000, // Wait two seconds
+            callback: () => {
+                this.changeDirection();
+            }
         });
     }
 
