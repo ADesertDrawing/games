@@ -12,7 +12,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         // this.setBounce(0.5, 0.5);
         // this.setDrag(-10, -10);
         // this.setDepth(this.y);
-        this.setVelocity(100, -100);
+        // this.setVelocity(100, -100);
         this.changeDirection();
     }
 
@@ -29,7 +29,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(newVX, newVY);
         // Wait 2 seconds then do it again
         this.scene.time.addEvent({
-            delay: 2000, // Wait two seconds
+            delay: Phaser.Math.Between(10, 5000), // Wait two seconds
             callback: () => {
                 this.changeDirection();
             }
