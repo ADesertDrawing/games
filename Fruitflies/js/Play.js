@@ -24,7 +24,7 @@ class Play extends Phaser.Scene {
         }
         // Choosing a random point in the canvas and popping a person in there
         Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
-        this.physics.add.collider(this.people, this.people);
+        //  this.physics.add.collider(this.people, this.people);
 
     }
 
@@ -112,7 +112,7 @@ class Play extends Phaser.Scene {
 
     update() {
 
-        this.player.depth = this.player.y;
+        //     this.player.depth = this.player.y;
 
         // console.log(this.p.x, this.p.y)
 
@@ -120,8 +120,6 @@ class Play extends Phaser.Scene {
         this.view.x = this.player.x;
         this.view.y = this.player.y + 45;
 
-        //  this didn't work
-        // this.people.sortProperty = 'y';
 
         const { left, right, up, down } = this.cursors;
 
