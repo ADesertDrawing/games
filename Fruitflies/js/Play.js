@@ -42,63 +42,8 @@ class Play extends Phaser.Scene {
         //Creating the player animations to face the 8 directions 
         //depending on direction of travel
 
+        console.log("temp")
 
-        this.anims.create({
-            key: 'right',
-            frames: this.anims.generateFrameNumbers('person', { start: 6, end: 6 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'left',
-            frames: this.anims.generateFrameNumbers('person', { start: 2, end: 2 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'up',
-            frames: this.anims.generateFrameNumbers('person', { start: 4, end: 4 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'down',
-            frames: this.anims.generateFrameNumbers('person', { start: 0, end: 0 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'downleft',
-            frames: this.anims.generateFrameNumbers('person', { start: 1, end: 1 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'upright',
-            frames: this.anims.generateFrameNumbers('person', { start: 5, end: 5 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'downright',
-            frames: this.anims.generateFrameNumbers('person', { start: 7, end: 7 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'upleft',
-            frames: this.anims.generateFrameNumbers('person', { start: 3, end: 3 }),
-            frameRate: 12,
-            repeat: -1,
-
-        });
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
             .setCollideWorldBounds(true)

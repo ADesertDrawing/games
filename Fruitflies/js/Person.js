@@ -14,13 +14,11 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         // this.setDepth(this.y);
         this.setVelocity(100, -100);
 
-        this.changeAnimation();
         this.changeDirection();
     }
 
     create() {
         super.create();
-
     }
 
     changeDirection() {
@@ -31,6 +29,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
         this.setVelocity(newVX, newVY);
 
+        this.setAnimation();
 
         // Wait a random amount of time then do it again
         this.scene.time.addEvent({
@@ -42,105 +41,45 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     }
 
 
-    changeAnimation() {
-        // Define sprite frame for each direction
-        this.anims.create({
-            key: 'right',
-            frames: [{ key: `person`, frame: 6 }],
-            frameRate: 12,
-            repeat: -1,
+    /**
+     * This is where the person chooses which direction to face
+     * Note that in an ideal world the Player would be just another Person
+     * and you could then use all this code for the player too.
+     * But for now this works.
+     */
+    setAnimation() {
+        const { x, y } = this.body.velocity;
 
-        });
-        this.anims.create({
-            key: 'left',
-            frames: [{ key: `person`, frame: 2 }],
-            frameRate: 12,
-            repeat: -1,
+        //Up, down left right movement
+        if (x < 0) {
+            this.play('left', true);
+        }
+        else if (x > 0) {
+            this.play('right', true);
+        }
+        if (y < 0) {
+            this.play('up', true);
 
-        });
-        this.anims.create({
-            key: 'up',
-            frames: [{ key: `person`, frame: 4 }],
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'down',
-            frames: [{ key: `person`, frame: 0 }],
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'downleft',
-            frames: [{ key: `person`, frame: 1 }],
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'upright',
-            frames: [{ key: `person`, frame: 5 }],
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'downright',
-            frames: [{ key: `person`, frame: 7 }],
-            frameRate: 12,
-            repeat: -1,
-
-        });
-        this.anims.create({
-            key: 'upleft',
-            frames: [{ key: `person`, frame: 3 }],
-            frameRate: 12,
-            repeat: -1,
-
-        });
+        }
+        else if (y > 0) {
+            this.play('down', true);
+        }
+        //Diagonal movement
+        if (x < 0 && y > 0) {
+            this.play('downleft', true);
+        }
+        if (x > 0 && y < 0) {
+            this.play('upright', true);
+        }
+        if (x > 0 && y > 0) {
+            this.play('downright', true);
+        }
+        if (x < 0 && y < 0) {
+            this.play('upleft', true);
+        }
     }
 
-
-
-
     update() {
-
-        //   this.person.depth = this.person.y;
-
-        if (newVY < 0) {
-            if (newVX < 0) {
-                this.sprite.anims.play('upleft', true);
-            }
-            else if (newVX > 0) {
-                this.sprite.anims.play(`upright`, true);
-            }
-            else {
-                this.sprite.anims.play(`up`, true);
-            }
-        }
-        else if (newVY > 0) {
-            if (newVX < 0) {
-                this.sprite.anims.play('downleft', true);
-            } else if (newVX > 0) {
-                this.sprite.anims.play('downright', true);
-            } else {
-                this.sprite.anims.play('down', true);
-            }
-        }
-        else {
-            if (newVX < 0) {
-                this.sprite.anims.play('left', true);
-            }
-            else if (newVX > 0) {
-                this.sprite.anims.play('right', true);
-            }
-        }
-
-
-        // this.person.depth = this.person.y;
-
 
     }
 
