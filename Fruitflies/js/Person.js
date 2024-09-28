@@ -19,10 +19,11 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
     create() {
         super.create();
+
     }
 
     changeDirection() {
-        console.log(this);
+        //    console.log(this);
         // Multiply x and y by either -1, 0, or 1 to change direction (or possibly not)
         const newVX = Phaser.Utils.Array.GetRandom([-100, 0, 100]);
         const newVY = Phaser.Utils.Array.GetRandom([-100, 0, 100]);
@@ -80,6 +81,8 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
+
+
 
     }
 

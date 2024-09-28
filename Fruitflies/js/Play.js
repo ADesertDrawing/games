@@ -42,7 +42,7 @@ class Play extends Phaser.Scene {
         //Creating the player animations to face the 8 directions 
         //depending on direction of travel
 
-        console.log("temp")
+        //  console.log("temp")
 
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
@@ -57,14 +57,15 @@ class Play extends Phaser.Scene {
 
     update() {
 
-        //     this.player.depth = this.player.y;
-
-        // console.log(this.p.x, this.p.y)
 
         //Make the view triangle follow the position of the player
         this.view.x = this.player.x;
         this.view.y = this.player.y + 45;
 
+        console.log(this.player.y);
+        console.log(this.player.depth);
+
+        this.player.setDepth(this.player.y);
 
         const { left, right, up, down } = this.cursors;
 
