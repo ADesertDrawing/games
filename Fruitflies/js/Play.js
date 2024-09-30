@@ -8,6 +8,8 @@ class Play extends Phaser.Scene {
     create() {
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        this.image = this.add.image(400, 300, 'border');
+
         this.playerAnimation();
         this.viewAnimation();
         this.peopleAnimation();

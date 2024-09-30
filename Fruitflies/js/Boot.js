@@ -12,6 +12,9 @@ class Boot extends Phaser.Scene {
         //Load the image of grave
         this.load.image('grave', 'assets/images/grave.png',);
 
+        //Load the image of border
+        this.load.image('border', 'assets/images/border.png',);
+
         //Load the spritesheet for player and people
         this.load.spritesheet('person', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });
 
