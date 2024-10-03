@@ -2,8 +2,8 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
     constructor(scene, x, y) {
         super(scene, x, y, "people", 0);
-        scene.add.existing(this)
-        scene.physics.add.existing(this)
+        scene.add.existing(this);
+        scene.physics.add.existing(this);
 
     }
 
@@ -16,9 +16,13 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(100, -100);
 
         this.changeDirection();
+
+        //set the depth of each person to their y value **NOT WORKING**
+        this.setDepth(this.y);
     }
 
     create() {
+
         super.create();
 
     }
@@ -85,8 +89,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
 
     update() {
-        //set the depth of each person to their y value
-        this.person.setDepth(this.person.y);
+
+
+
     }
 
 }

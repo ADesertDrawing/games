@@ -56,9 +56,9 @@ class Play extends Phaser.Scene {
     }
 
     personDeath() {
-        //  Remove one child from the display list every 2s
+        //  Remove one child from the display list every 1s
         const timedEvent = this.time.addEvent({
-            delay: 2000,
+            delay: 1000,
             callback: this.onEvent,
             callbackScope: this,
             loop: true
@@ -68,6 +68,7 @@ class Play extends Phaser.Scene {
     onEvent() {
         const child = this.children.getRandom();
         if (child) {
+            // console.log(this.person.x, this.person.y);
             this.children.remove(child);
         }
     };
@@ -80,8 +81,8 @@ class Play extends Phaser.Scene {
         this.view.y = this.player.y + 45;
 
         //Set the player depth to the y value
-        console.log(this.player.y);
-        console.log(this.player.depth);
+        // console.log(this.player.y);
+        // console.log(this.player.depth);
         this.player.setDepth(this.player.y);
 
         const { left, right, up, down } = this.cursors;
