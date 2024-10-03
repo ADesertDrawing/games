@@ -13,11 +13,13 @@ class Play extends Phaser.Scene {
         this.playerAnimation();
         this.viewAnimation();
         this.peopleAnimation();
+        this.personDeath();
     }
 
     //the NPCs appearing randomly and wandering about
     peopleAnimation() {
         this.people = this.physics.add.group();
+
         for (let i = 0; i < 10; i++) {
             const person = new Person(this, 100, 100);
             this.people.add(person);
@@ -27,7 +29,6 @@ class Play extends Phaser.Scene {
         // Choosing a random point in the canvas and popping a person in there
         Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
         //  this.physics.add.collider(this.people, this.people);
-
     }
 
 
@@ -51,11 +52,25 @@ class Play extends Phaser.Scene {
             .setCollideWorldBounds(true)
             .setDrag(100)
             .setMaxVelocity(200, 200)
-
-
         //setDepth(this.player.y);
-
     }
+
+    personDeath() {
+        //  Remove one child from the display list every 2s
+        const timedEvent = this.time.addEvent({
+            delay: 2000,
+            callback: this.onEvent,
+            callbackScope: this,
+            loop: true
+        });
+    };
+
+    onEvent() {
+        const child = this.children.getRandom();
+        if (child) {
+            this.children.remove(child);
+        }
+    };
 
     update() {
 
@@ -64,9 +79,9 @@ class Play extends Phaser.Scene {
         this.view.x = this.player.x;
         this.view.y = this.player.y + 45;
 
+        //Set the player depth to the y value
         console.log(this.player.y);
         console.log(this.player.depth);
-
         this.player.setDepth(this.player.y);
 
         const { left, right, up, down } = this.cursors;

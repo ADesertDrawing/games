@@ -4,6 +4,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, "people", 0);
         scene.add.existing(this)
         scene.physics.add.existing(this)
+
     }
 
     setup() {
@@ -49,6 +50,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
      * But for now this works.
      */
     setAnimation() {
+
         const { x, y } = this.body.velocity;
 
         //Up, down left right movement
@@ -80,10 +82,11 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+
+
     update() {
-
-
-
+        //set the depth of each person to their y value
+        this.person.setDepth(this.person.y);
     }
 
 }
