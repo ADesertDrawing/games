@@ -73,9 +73,18 @@ class Play extends Phaser.Scene {
             const y = child.y;
             //Remove the person
             this.people.remove(child, true);
-            //Add the grave sprite
-            const newSprite = this.physics.add.sprite(x, y, `grave`).setDepth(this.y).setScale(0.5);
 
+            // Add the blink sprite
+            const blinkSprite = this.physics.add.sprite(x, y, 'blink').setDepth(this.y).setScale(0.5);
+
+            this.time.delayedCall(1500, () => {
+                // Remove the blink sprite
+                blinkSprite.destroy();
+
+                //Add the grave sprite
+                const newSprite = this.physics.add.sprite(x, y, `grave`).setDepth(this.y).setScale(0.5);
+
+            });
         }
 
     }
