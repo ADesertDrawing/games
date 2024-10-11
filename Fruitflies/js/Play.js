@@ -13,14 +13,14 @@ class Play extends Phaser.Scene {
         this.playerAnimation();
         this.viewAnimation();
         this.peopleAnimation();
-        this.personDeath();
+        this.choosePerson();
     }
 
     //the NPCs appearing randomly and wandering about
     peopleAnimation() {
         this.people = this.physics.add.group();
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 30; i++) {
             const person = new Person(this, 100, 100);
             this.people.add(person);
             person.setup();
@@ -29,8 +29,8 @@ class Play extends Phaser.Scene {
         // Choosing a random point in the canvas and popping a person in there
         Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
         //  this.physics.add.collider(this.people, this.people);
-    }
 
+    }
 
     viewAnimation() {
         //Adding the player view triangle
@@ -55,10 +55,10 @@ class Play extends Phaser.Scene {
         //setDepth(this.player.y);
     }
 
-    personDeath() {
+    choosePerson() {
         //  Remove one child from the display list every 1s
         const timedEvent = this.time.addEvent({
-            delay: 1000,
+            delay: Phaser.Math.Between(1000, 1000),
             callback: this.onEvent,
             callbackScope: this,
             loop: true
@@ -66,12 +66,20 @@ class Play extends Phaser.Scene {
     };
 
     onEvent() {
-        const child = this.children.getRandom();
+        const child = Phaser.Utils.Array.GetRandom(this.people.getChildren());
         if (child) {
-            // console.log(this.person.x, this.person.y);
-            this.children.remove(child);
+            //Grab the x and y of the disappearing person
+            const x = child.x;
+            const y = child.y;
+            //Remove the person
+            this.people.remove(child, true);
+            //Add the grave sprite
+            const newSprite = this.physics.add.sprite(x, y, `grave`).setDepth(this.y).setScale(0.5);
+
         }
-    };
+
+    }
+
 
     update() {
 
