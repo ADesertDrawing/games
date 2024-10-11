@@ -90,8 +90,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
 
     update() {
-        //set the depth of each person to their y value **NOT WORKING**
-        this.person.setDepth(this.person.y);
+
 
 
     }

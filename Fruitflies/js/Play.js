@@ -20,7 +20,7 @@ class Play extends Phaser.Scene {
     peopleAnimation() {
         this.people = this.physics.add.group();
 
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 5; i++) {
             const person = new Person(this, 100, 100);
             this.people.add(person);
             person.setup();
@@ -58,7 +58,7 @@ class Play extends Phaser.Scene {
     choosePerson() {
         //  Remove one child from the display list every 1s
         const timedEvent = this.time.addEvent({
-            delay: Phaser.Math.Between(1000, 1000),
+            delay: Phaser.Math.Between(1000, 5000),
             callback: this.onEvent,
             callbackScope: this,
             loop: true
@@ -74,20 +74,34 @@ class Play extends Phaser.Scene {
             //Remove the person
             this.people.remove(child, true);
 
-            // Add the blink sprite
-            const blinkSprite = this.physics.add.sprite(x, y, 'blink').setDepth(this.y).setScale(0.5);
+            // Add the looking forward sprite
+            const surprisedLook = this.physics.add.sprite(x, y, 'person')
+                .setDepth(this.y)
+                .setScale(1)
+                .play('down', true);
 
+            // Destroy the surprised look person after 1.5s
             this.time.delayedCall(1500, () => {
-                // Remove the blink sprite
-                blinkSprite.destroy();
+                surprisedLook.destroy();
 
-                //Add the grave sprite
-                const graveSprite = this.physics.add.sprite(x, y, `grave`).setScale(0.5);
-                graveSprite.setDepth(y);
+                // Add the blink sprite
+                const blinkSprite = this.physics.add.sprite(x, y, 'blink')
+                    .setDepth(this.y)
+                    .setScale(0.5);
 
+                //Another 1.5s delay before removing the blink sprite
+                this.time.delayedCall(1500, () => {
+                    // Remove the blink sprite
+                    blinkSprite.destroy();
+
+                    //Add the grave sprite
+                    const graveSprite = this.physics.add.sprite(x, y, `grave`)
+                        .setScale(0.5)
+                        .setDepth(y);
+
+                });
             });
         }
-
     }
 
 
