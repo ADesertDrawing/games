@@ -28,7 +28,7 @@ class Play extends Phaser.Scene {
         }
         // Choosing a random point in the canvas and popping a person in there
         Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
-        //  this.physics.add.collider(this.people, this.people);
+        // this.physics.add.collider(this.people, this.player);
 
     }
 
@@ -38,7 +38,7 @@ class Play extends Phaser.Scene {
         let x = this.player.x;
         let y = this.player.y;
         this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0).setDepth(0);
-        //this.view.depth = this.view.y - 1;
+
     }
 
     playerAnimation() {
@@ -52,7 +52,7 @@ class Play extends Phaser.Scene {
             .setCollideWorldBounds(true)
             .setDrag(100)
             .setMaxVelocity(200, 200)
-        //setDepth(this.player.y);
+            .setDepth(this.y);
     }
 
     choosePerson() {
@@ -82,7 +82,8 @@ class Play extends Phaser.Scene {
                 blinkSprite.destroy();
 
                 //Add the grave sprite
-                const newSprite = this.physics.add.sprite(x, y, `grave`).setDepth(this.y).setScale(0.5);
+                const graveSprite = this.physics.add.sprite(x, y, `grave`).setScale(0.5);
+                graveSprite.setDepth(y);
 
             });
         }
@@ -91,16 +92,18 @@ class Play extends Phaser.Scene {
 
 
     update() {
+        //Set the people depth to the y value     
+        this.people.getChildren().forEach((sprite) => {
+            sprite.setDepth(sprite.y);
+            //Set the player depth to the y value
+            this.player.setDepth(this.player.y);
+        });
+
 
 
         //Make the view triangle follow the position of the player
         this.view.x = this.player.x;
         this.view.y = this.player.y + 45;
-
-        //Set the player depth to the y value
-        // console.log(this.player.y);
-        // console.log(this.player.depth);
-        this.player.setDepth(this.player.y);
 
         const { left, right, up, down } = this.cursors;
 
