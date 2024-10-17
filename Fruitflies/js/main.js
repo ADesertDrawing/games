@@ -10,7 +10,11 @@ let config = {
     height: 600,
     backgroundColor: `#dedede`,
     physics: {
-        default: `arcade`
+        default: `arcade`,
+        arcade: {
+            gravity: { y: 0 },
+            debug: true //see collision boxes if true
+        }
     },
     scene: [Boot, Play]
 };

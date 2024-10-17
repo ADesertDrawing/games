@@ -14,13 +14,25 @@ class Play extends Phaser.Scene {
         this.viewAnimation();
         this.peopleAnimation();
         this.choosePerson();
+
+        // Create a group for grave sprites
+        this.graves = this.physics.add.group();
+
+
+        // Set up overlap detection between the view triangle and the graves
+        this.physics.add.overlap(this.view, this.graves, this.onViewOverlap, null, this);
+    }
+
+    // Callback function for when the view overlaps with a grave
+    onViewOverlap(view, grave) {
+        console.log('SHUNNING IS HAPPENING!!!');
     }
 
     //the NPCs appearing randomly and wandering about
     peopleAnimation() {
         this.people = this.physics.add.group();
 
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 20; i++) {
             const person = new Person(this, 100, 100);
             this.people.add(person);
             person.setup();
@@ -98,7 +110,8 @@ class Play extends Phaser.Scene {
                     const graveSprite = this.physics.add.sprite(x, y, `grave`)
                         .setScale(0.5)
                         .setDepth(y);
-
+                    //Add it to the graves group
+                    this.graves.add(graveSprite);
                 });
             });
         }
