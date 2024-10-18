@@ -17,14 +17,10 @@ class Play extends Phaser.Scene {
 
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
-
-
-        // Set up overlap detection between the view triangle and the graves
-        this.physics.add.overlap(this.view, this.graves, this.onViewOverlap, null, this);
     }
 
-    // Callback function for when the view overlaps with a grave
-    onViewOverlap(view, grave) {
+    // Callback function for when the triangle (with the view) overlaps with a grave
+    onViewOverlap() {
         console.log('SHUNNING IS HAPPENING!!!');
     }
 
@@ -49,7 +45,22 @@ class Play extends Phaser.Scene {
 
         let x = this.player.x;
         let y = this.player.y;
-        this.view = this.physics.add.sprite(x, y, `view`).setOrigin(0.52, 0).setDepth(0);
+        this.view = this.add.sprite(x, y, `view`).setOrigin(0.52, 0).setDepth(0);
+
+        // An isosceles triangle which follows the player sprite so we can detect overlaps
+        const x1 = this.player.x - 70; // Left corner of the base
+        const y1 = this.player.y + 180; // Bottom of the triangle
+        const x2 = this.player.x + 70; // Right corner of the base
+        const y2 = this.player.y + 180; // Bottom of the triangle
+        const x3 = this.player.x; // Top point of the triangle
+        const y3 = this.player.y;
+
+        this.triangle = new Phaser.Geom.Triangle(x1, y1, x2, y2, x3, y3);
+
+        // Make the triangle visible for debugging
+        this.graphics = this.add.graphics();
+        this.graphics.lineStyle(2, 0xffff00);
+        this.graphics.strokeTriangleShape(this.triangle);
 
     }
 
@@ -119,18 +130,54 @@ class Play extends Phaser.Scene {
 
 
     update() {
-        //Set the people depth to the y value     
+        // Set the people depth to the y value     
         this.people.getChildren().forEach((sprite) => {
             sprite.setDepth(sprite.y);
-            //Set the player depth to the y value
+            // Set the player depth to the y value
             this.player.setDepth(this.player.y);
         });
-
-
-
-        //Make the view triangle follow the position of the player
+        // Make the view sprite follow the position of the player
         this.view.x = this.player.x;
         this.view.y = this.player.y + 45;
+
+        // Define the base triangle shape
+        const baseX1 = -70;
+        const baseY1 = 190;
+        const baseX2 = 65;
+        const baseY2 = 190;
+        const baseX3 = 0;
+        const baseY3 = 0;
+
+        // Calculate the rotated points for the triangle based on the view's rotation
+        const angle = this.view.rotation;
+        const cos = Math.cos(angle);
+        const sin = Math.sin(angle);
+
+        const x1 = this.view.x + (baseX1 * cos - baseY1 * sin);
+        const y1 = this.view.y + (baseX1 * sin + baseY1 * cos);
+        const x2 = this.view.x + (baseX2 * cos - baseY2 * sin);
+        const y2 = this.view.y + (baseX2 * sin + baseY2 * cos);
+        const x3 = this.view.x + (baseX3 * cos - baseY3 * sin);
+        const y3 = this.view.y + (baseX3 * sin + baseY3 * cos);
+
+        // Update the triangle's vertices
+        this.triangle.setTo(x1, y1, x2, y2, x3, y3);
+
+        // Clear and redraw the triangle for debugging
+        this.graphics.clear();
+        this.graphics.lineStyle(2, 0xffff00);
+        this.graphics.strokeTriangleShape(this.triangle);
+
+        // Check for overlap with graves
+        this.graves.getChildren().forEach(grave => {
+            const graveBounds = grave.getBounds();
+
+            // Check if the triangle intersects the grave's bounding rectangle
+            if (Phaser.Geom.Intersects.RectangleToTriangle(graveBounds, this.triangle)) {
+                this.onViewOverlap(this.view, grave);
+            }
+        });
+
 
         const { left, right, up, down } = this.cursors;
 
@@ -149,10 +196,9 @@ class Play extends Phaser.Scene {
             this.player.setVelocityY(200);
         }
 
-        const { x } = this.player.body.velocity;
-        const { y } = this.player.body.velocity;
+        const { x, y } = this.player.body.velocity;
 
-        //Up, down left right movement
+        // Up, down, left, right movement
         if (x < 0) {
             this.player.play('left', true);
             this.view.rotation = 1.5;
@@ -164,13 +210,12 @@ class Play extends Phaser.Scene {
         if (y < 0) {
             this.player.play('up', true);
             this.view.rotation = 3.15;
-
         }
         else if (y > 0) {
             this.player.play('down', true);
             this.view.rotation = 0;
         }
-        //Diagonal movement
+        // Diagonal movement
         if (x < 0 && y > 0) {
             this.player.play('downleft', true);
             this.view.rotation = 0.75;
@@ -187,8 +232,6 @@ class Play extends Phaser.Scene {
             this.player.play('upleft', true);
             this.view.rotation = 2.25;
         }
-
     }
-
 }
 
