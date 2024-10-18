@@ -9,19 +9,56 @@ class Play extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.image = this.add.image(400, 300, 'border');
+        this.image = this.add.image(90, 60, 'lifebox').setDepth(700).setScale(0.15);
 
         this.playerAnimation();
         this.viewAnimation();
         this.peopleAnimation();
         this.choosePerson();
+        this.playerLife();
+
 
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
+
+
     }
 
     // Callback function for when the triangle (with the view) overlaps with a grave
     onViewOverlap() {
         console.log('SHUNNING IS HAPPENING!!!');
+    }
+
+    playerLife() {
+        this.timerValue = 0;
+
+        // Create a text object to display the timer
+        this.timerText = this.add.text(100, 42, `${this.timerValue}`, {
+            fontSize: '40px',
+            fill: '#000000',
+        }).setDepth(710);
+
+        // Set up a timer that increments the timerValue every 2 seconds
+        this.timerEvent = this.time.addEvent({
+            delay: 2000,
+            callback: this.incrementTimer,
+            callbackScope: this,
+            loop: true
+        });
+    }
+    incrementTimer() {
+        if (this.timerValue < 5) {
+            this.timerValue += 1;
+            this.timerText.setText(`${this.timerValue}`);
+        } else {
+            // Stop the Life timer when it reaches 99
+            this.timerEvent.remove();
+            this.playerDeath();
+        }
+    }
+
+    playerDeath() {
+        const goodInningsText = this.add.text(400, 400, `Good Innings`, { font: '64px Arial' });
     }
 
     //the NPCs appearing randomly and wandering about

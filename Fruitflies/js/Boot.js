@@ -15,6 +15,9 @@ class Boot extends Phaser.Scene {
         //Load the image of border
         this.load.image('border', 'assets/images/border.png',);
 
+        //Load the image of life box
+        this.load.image('lifebox', 'assets/images/lifebox.png',);
+
         //Load the image of person blinking before dying
         this.load.image('blink', 'assets/images/personSblink.png',);
 
