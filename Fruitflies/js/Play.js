@@ -212,8 +212,8 @@ class Play extends Phaser.Scene {
 
         // Clear and redraw the triangle for debugging
         this.graphics.clear();
-        this.graphics.lineStyle(2, 0xffff00);
-        this.graphics.strokeTriangleShape(this.triangle);
+        this.graphics.fillStyle(0xffff00, 0); //second number is alpha value
+        this.graphics.fillTriangleShape(this.triangle);
 
         // Check for overlap with graves
         this.graves.getChildren().forEach(grave => {
