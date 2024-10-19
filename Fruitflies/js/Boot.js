@@ -19,14 +19,21 @@ class Boot extends Phaser.Scene {
         this.load.image('lifebox', 'assets/images/lifebox.png',);
 
         //Load the image of person blinking before dying
-        this.load.image('blink', 'assets/images/personSblink.png',);
+        // this.load.image('blink', 'assets/images/personSblink.png',);
+
+        //Load the image of Good Innings text
+        this.load.image('innings', 'assets/images/innings.png',);
+
+        //Load the spritesheet for player and people
+        this.load.spritesheet('blinkgif', 'assets/images/blinksheet_100px.png', { frameWidth: 50, frameHeight: 94 });
 
         //Load the spritesheet for player and people
         this.load.spritesheet('person', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });
 
         // //Load the spritesheets for NPCs
-        this.load.spritesheet('people', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });        //Move to the Play scene when these are loaded
+        this.load.spritesheet('people', 'assets/images/person.png', { frameWidth: 50, frameHeight: 94 });
 
+        //Move to the Play scene when these are loaded
         this.load.on(`complete`, () => {
             this.createAnims();
             this.scene.start(`play`);

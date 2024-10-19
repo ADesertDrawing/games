@@ -21,12 +21,20 @@ class Play extends Phaser.Scene {
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
 
-
+        //Create the blink gif
+        this.anims.create({
+            key: 'blinkgif',
+            frames: this.anims.generateFrameNumbers('blinkgif', { start: 0, end: 4 }),
+            frameRate: 8,
+            repeat: 0 //no loop
+        });
     }
 
     // Callback function for when the triangle (with the view) overlaps with a grave
     onViewOverlap() {
         console.log('SHUNNING IS HAPPENING!!!');
+        // Screen shake while overlap is happening
+        this.cameras.main.shake(500, 0.02);
     }
 
     playerLife() {
@@ -38,34 +46,35 @@ class Play extends Phaser.Scene {
             fill: '#000000',
         }).setDepth(710);
 
-        // Set up a timer that increments the timerValue every 2 seconds
+        // Set up a timer that increments the timerValue every sec
         this.timerEvent = this.time.addEvent({
-            delay: 2000,
+            delay: 550,
             callback: this.incrementTimer,
             callbackScope: this,
             loop: true
         });
     }
     incrementTimer() {
-        if (this.timerValue < 5) {
+        if (this.timerValue < 99) {
             this.timerValue += 1;
             this.timerText.setText(`${this.timerValue}`);
         } else {
             // Stop the Life timer when it reaches 99
             this.timerEvent.remove();
-            this.playerDeath();
+            this.player99Death();
         }
     }
 
-    playerDeath() {
-        const goodInningsText = this.add.text(400, 400, `Good Innings`, { font: '64px Arial' });
+    player99Death() {
+
+        this.image = this.add.image(400, 300, 'innings').setDepth(720).setScale(0.15);
     }
 
     //the NPCs appearing randomly and wandering about
     peopleAnimation() {
         this.people = this.physics.add.group();
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 30; i++) {
             const person = new Person(this, 100, 100);
             this.people.add(person);
             person.setup();
@@ -116,7 +125,7 @@ class Play extends Phaser.Scene {
     }
 
     choosePerson() {
-        //  Remove one child from the display list every 1s
+        //  Remove one child from the display list every...
         const timedEvent = this.time.addEvent({
             delay: Phaser.Math.Between(1000, 5000),
             callback: this.onEvent,
@@ -145,9 +154,10 @@ class Play extends Phaser.Scene {
                 surprisedLook.destroy();
 
                 // Add the blink sprite
-                const blinkSprite = this.physics.add.sprite(x, y, 'blink')
+                const blinkSprite = this.physics.add.sprite(x, y, 'blinkgif')
                     .setDepth(this.y)
-                    .setScale(0.5);
+                    .setScale(1)
+                    .play(`blinkgif`);
 
                 //Another 1.5s delay before removing the blink sprite
                 this.time.delayedCall(1500, () => {

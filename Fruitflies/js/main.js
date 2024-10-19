@@ -13,7 +13,7 @@ let config = {
         default: `arcade`,
         arcade: {
             gravity: { y: 0 },
-            debug: true //see collision boxes if true
+            debug: false //see collision boxes if true
         }
     },
     scene: [Boot, Play]
