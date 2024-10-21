@@ -34,7 +34,7 @@ class Play extends Phaser.Scene {
     onViewOverlap() {
         console.log('SHUNNING IS HAPPENING!!!');
         // Screen shake while overlap is happening
-        this.cameras.main.shake(500, 0.02);
+        this.cameras.main.shake(100, 0.02);
     }
 
     playerLife() {
@@ -48,7 +48,7 @@ class Play extends Phaser.Scene {
 
         // Set up a timer that increments the timerValue every sec
         this.timerEvent = this.time.addEvent({
-            delay: 550,
+            delay: 100,
             callback: this.incrementTimer,
             callbackScope: this,
             loop: true
@@ -66,8 +66,50 @@ class Play extends Phaser.Scene {
     }
 
     player99Death() {
+        // Freeze the player and make them face the front (surprised look)
+        this.player.setVelocity(0, 0); // Stop moving
+        this.player.play('down', true); // Face front
 
-        this.image = this.add.image(400, 300, 'innings').setDepth(720).setScale(0.15);
+        // Delay before blink
+        this.time.delayedCall(1000, () => { // 1sec pause
+
+            // Remove player, view, and graphics after the grave is displayed
+            if (this.player) {
+                this.player.destroy();
+            }
+
+            // Play the blink animation after the pause
+            const blinkSprite = this.add.sprite(this.player.x, this.player.y, 'blinkgif')
+                .setDepth(this.player.y)
+                .setScale(1)
+                .play('blinkgif');
+
+            blinkSprite.on('animationcomplete', () => {
+                // 1 sec pause after blink, before grave
+                this.time.delayedCall(1000, () => {
+                    // After blink animation finishes, remove view sprite and add the grave sprite
+                    if (this.view) {
+                        this.view.destroy();
+                    }
+                    this.add.image(this.player.x, this.player.y, 'grave')
+                        .setScale(0.5)
+                        .setDepth(this.player.y);
+
+                    // Remove the blink sprite after the animation completes
+                    blinkSprite.destroy();
+
+                    // Show the 'innings' image in the center after a short delay
+                    this.time.delayedCall(1500, () => {
+                        this.add.image(400, 300, 'innings')
+                            .setDepth(720)
+                            .setScale(0.15);
+
+
+                        this.graphics.clear();
+                    });
+                });
+            });
+        });
     }
 
     //the NPCs appearing randomly and wandering about
@@ -127,7 +169,7 @@ class Play extends Phaser.Scene {
     choosePerson() {
         //  Remove one child from the display list every...
         const timedEvent = this.time.addEvent({
-            delay: Phaser.Math.Between(1000, 5000),
+            delay: Phaser.Math.Between(2000, 3000),
             callback: this.onEvent,
             callbackScope: this,
             loop: true
@@ -145,7 +187,7 @@ class Play extends Phaser.Scene {
 
             // Add the looking forward sprite
             const surprisedLook = this.physics.add.sprite(x, y, 'person')
-                .setDepth(this.y)
+                .setDepth(y)
                 .setScale(1)
                 .play('down', true);
 
@@ -155,7 +197,7 @@ class Play extends Phaser.Scene {
 
                 // Add the blink sprite
                 const blinkSprite = this.physics.add.sprite(x, y, 'blinkgif')
-                    .setDepth(this.y)
+                    .setDepth(y)
                     .setScale(1)
                     .play(`blinkgif`);
 
@@ -177,108 +219,117 @@ class Play extends Phaser.Scene {
 
 
     update() {
-        // Set the people depth to the y value     
-        this.people.getChildren().forEach((sprite) => {
-            sprite.setDepth(sprite.y);
+        // Only carry on if the player exists
+        if (this.player) {
+
+            // Set the people depth to the y value     
+            this.people.getChildren().forEach((sprite) => {
+                sprite.setDepth(sprite.y);
+            });
+
             // Set the player depth to the y value
             this.player.setDepth(this.player.y);
-        });
-        // Make the view sprite follow the position of the player
-        this.view.x = this.player.x;
-        this.view.y = this.player.y + 45;
 
-        // Define the base triangle shape
-        const baseX1 = -70;
-        const baseY1 = 190;
-        const baseX2 = 65;
-        const baseY2 = 190;
-        const baseX3 = 0;
-        const baseY3 = 0;
+            // Make the view sprite follow the position of the player
+            this.view.x = this.player.x;
+            this.view.y = this.player.y + 45;
 
-        // Calculate the rotated points for the triangle based on the view's rotation
-        const angle = this.view.rotation;
-        const cos = Math.cos(angle);
-        const sin = Math.sin(angle);
+            // Define the base triangle shape
+            const baseX1 = -70;
+            const baseY1 = 190;
+            const baseX2 = 65;
+            const baseY2 = 190;
+            const baseX3 = 0;
+            const baseY3 = 0;
 
-        const x1 = this.view.x + (baseX1 * cos - baseY1 * sin);
-        const y1 = this.view.y + (baseX1 * sin + baseY1 * cos);
-        const x2 = this.view.x + (baseX2 * cos - baseY2 * sin);
-        const y2 = this.view.y + (baseX2 * sin + baseY2 * cos);
-        const x3 = this.view.x + (baseX3 * cos - baseY3 * sin);
-        const y3 = this.view.y + (baseX3 * sin + baseY3 * cos);
+            // Calculate the rotated points for the triangle based on the view's rotation
+            const angle = this.view.rotation;
+            const cos = Math.cos(angle);
+            const sin = Math.sin(angle);
 
-        // Update the triangle's vertices
-        this.triangle.setTo(x1, y1, x2, y2, x3, y3);
+            const x1 = this.view.x + (baseX1 * cos - baseY1 * sin);
+            const y1 = this.view.y + (baseX1 * sin + baseY1 * cos);
+            const x2 = this.view.x + (baseX2 * cos - baseY2 * sin);
+            const y2 = this.view.y + (baseX2 * sin + baseY2 * cos);
+            const x3 = this.view.x + (baseX3 * cos - baseY3 * sin);
+            const y3 = this.view.y + (baseX3 * sin + baseY3 * cos);
 
-        // Clear and redraw the triangle for debugging
-        this.graphics.clear();
-        this.graphics.fillStyle(0xffff00, 0); //second number is alpha value
-        this.graphics.fillTriangleShape(this.triangle);
+            // Update the triangle's vertices
+            this.triangle.setTo(x1, y1, x2, y2, x3, y3);
 
-        // Check for overlap with graves
-        this.graves.getChildren().forEach(grave => {
-            const graveBounds = grave.getBounds();
+            // Clear and redraw the triangle for debugging
+            this.graphics.clear();
+            this.graphics.fillStyle(0xffff00, 0); //second number is alpha value
+            this.graphics.fillTriangleShape(this.triangle);
 
-            // Check if the triangle intersects the grave's bounding rectangle
-            if (Phaser.Geom.Intersects.RectangleToTriangle(graveBounds, this.triangle)) {
-                this.onViewOverlap(this.view, grave);
+            // Check for overlap with graves
+            this.graves.getChildren().forEach(grave => {
+                const graveBounds = grave.getBounds();
+
+                // Check if the triangle intersects the grave's bounding rectangle
+                if (Phaser.Geom.Intersects.RectangleToTriangle(graveBounds, this.triangle)) {
+                    this.onViewOverlap(this.view, grave);
+                }
+            });
+
+            //Handle player movement (if they exist)
+            const { left, right, up, down } = this.cursors;
+
+            // Set player velocity only if the player still exists and has a body
+            if (this.player.body) {
+                this.player.setVelocity(0, 0);
+
+                if (left.isDown) {
+                    this.player.setVelocityX(-200);
+                }
+                else if (right.isDown) {
+                    this.player.setVelocityX(200);
+                }
+
+                if (up.isDown) {
+                    this.player.setVelocityY(-200);
+                }
+                else if (down.isDown) {
+                    this.player.setVelocityY(200);
+                }
+
+                const { x, y } = this.player.body.velocity;
+
+                // Up, down, left, right movement
+                if (x < 0) {
+                    this.player.play('left', true);
+                    this.view.rotation = 1.5;
+                }
+                else if (x > 0) {
+                    this.player.play('right', true);
+                    this.view.rotation = -1.5;
+                }
+                if (y < 0) {
+                    this.player.play('up', true);
+                    this.view.rotation = 3.15;
+                }
+                else if (y > 0) {
+                    this.player.play('down', true);
+                    this.view.rotation = 0;
+                }
+                // Diagonal movement
+                if (x < 0 && y > 0) {
+                    this.player.play('downleft', true);
+                    this.view.rotation = 0.75;
+                }
+                if (x > 0 && y < 0) {
+                    this.player.play('upright', true);
+                    this.view.rotation = -2.25;
+                }
+                if (x > 0 && y > 0) {
+                    this.player.play('downright', true);
+                    this.view.rotation = -0.75;
+                }
+                if (x < 0 && y < 0) {
+                    this.player.play('upleft', true);
+                    this.view.rotation = 2.25;
+                }
             }
-        });
-
-
-        const { left, right, up, down } = this.cursors;
-
-        this.player.setVelocity(0, 0);
-        if (left.isDown) {
-            this.player.setVelocityX(-200);
-        }
-        else if (right.isDown) {
-            this.player.setVelocityX(200);
-        }
-
-        if (up.isDown) {
-            this.player.setVelocityY(-200);
-        }
-        else if (down.isDown) {
-            this.player.setVelocityY(200);
-        }
-
-        const { x, y } = this.player.body.velocity;
-
-        // Up, down, left, right movement
-        if (x < 0) {
-            this.player.play('left', true);
-            this.view.rotation = 1.5;
-        }
-        else if (x > 0) {
-            this.player.play('right', true);
-            this.view.rotation = -1.5;
-        }
-        if (y < 0) {
-            this.player.play('up', true);
-            this.view.rotation = 3.15;
-        }
-        else if (y > 0) {
-            this.player.play('down', true);
-            this.view.rotation = 0;
-        }
-        // Diagonal movement
-        if (x < 0 && y > 0) {
-            this.player.play('downleft', true);
-            this.view.rotation = 0.75;
-        }
-        if (x > 0 && y < 0) {
-            this.player.play('upright', true);
-            this.view.rotation = -2.25;
-        }
-        if (x > 0 && y > 0) {
-            this.player.play('downright', true);
-            this.view.rotation = -0.75;
-        }
-        if (x < 0 && y < 0) {
-            this.player.play('upleft', true);
-            this.view.rotation = 2.25;
         }
     }
 }
-
