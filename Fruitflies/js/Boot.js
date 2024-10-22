@@ -18,8 +18,11 @@ class Boot extends Phaser.Scene {
         //Load the image of life box
         this.load.image('lifebox', 'assets/images/lifebox.png',);
 
-        //Load the image of person blinking before dying
-        // this.load.image('blink', 'assets/images/personSblink.png',);
+        //Load the image of Fruitflies text
+        this.load.image('fruitfliesTitle', 'assets/images/fruitfliesTitle.png',);
+
+        //Load the image of A desert Drawing for title
+        this.load.image('fruitfliesName', 'assets/images/fruitfliesName.png',);
 
         //Load the image of Good Innings text
         this.load.image('innings', 'assets/images/innings.png',);
@@ -36,7 +39,7 @@ class Boot extends Phaser.Scene {
         //Move to the Play scene when these are loaded
         this.load.on(`complete`, () => {
             this.createAnims();
-            this.scene.start(`play`);
+            this.scene.start(`title`); //Load title page once booted
         });
 
     }

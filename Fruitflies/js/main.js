@@ -8,7 +8,7 @@ let config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    backgroundColor: `#fefcf8`,
+    backgroundColor: `#ffffff`,
     physics: {
         default: `arcade`,
         arcade: {
@@ -16,7 +16,7 @@ let config = {
             debug: false //see collision boxes if true
         }
     },
-    scene: [Boot, Play]
+    scene: [Boot, Title, Instructions, Play]
 };
 
 let game = new Phaser.Game(config);
