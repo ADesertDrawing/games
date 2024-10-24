@@ -3,6 +3,7 @@ class Play extends Phaser.Scene {
         super({
             key: `play`
         });
+        this.isPlayerDead = false; //Check if player is dead
     }
 
     create() {
@@ -32,9 +33,12 @@ class Play extends Phaser.Scene {
 
     // Callback function for when the triangle (with the view) overlaps with a grave
     onViewOverlap() {
-        console.log('SHUNNING IS HAPPENING!!!');
-        // Screen shake while overlap is happening
-        this.cameras.main.shake(100, 0.02);
+        //Shunning and screen shake only happens if player is alive (doesn't get stuuck in a shake at end)
+        if (!this.isPlayerDead) {
+            console.log('SHUNNING IS HAPPENING!!!');
+            // Screen shake while overlap is happening
+            this.cameras.main.shake(100, 0.02);
+        }
     }
 
     playerLife() {
@@ -66,6 +70,10 @@ class Play extends Phaser.Scene {
     }
 
     player99Death() {
+
+        //Set the checker to true when player is dead
+        this.isPlayerDead = true;
+
         // Freeze the player and make them face the front (surprised look)
         this.player.setVelocity(0, 0); // Stop moving
         this.player.play('down', true); // Face front

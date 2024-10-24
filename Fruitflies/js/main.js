@@ -16,7 +16,7 @@ let config = {
             debug: false //see collision boxes if true
         }
     },
-    scene: [Boot, Title, Instructions, Play]
+    scene: [Boot, Title, Instructions, BigPlayerIntro, Play]
 };
 
 let game = new Phaser.Game(config);

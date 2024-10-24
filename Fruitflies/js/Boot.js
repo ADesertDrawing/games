@@ -15,6 +15,9 @@ class Boot extends Phaser.Scene {
         //Load the image of border
         this.load.image('border', 'assets/images/border.png',);
 
+        //Load the image of instructions
+        this.load.image('instructions', 'assets/images/instructions.png',);
+
         //Load the image of life box
         this.load.image('lifebox', 'assets/images/lifebox.png',);
 
@@ -23,6 +26,9 @@ class Boot extends Phaser.Scene {
 
         //Load the image of A desert Drawing for title
         this.load.image('fruitfliesName', 'assets/images/fruitfliesName.png',);
+
+        //Load the image of a big player for the intro
+        this.load.image('personBig', 'assets/images/personBig.png',);
 
         //Load the image of Good Innings text
         this.load.image('innings', 'assets/images/innings.png',);
