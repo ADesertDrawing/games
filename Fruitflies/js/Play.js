@@ -3,7 +3,8 @@ class Play extends Phaser.Scene {
         super({
             key: `play`
         });
-        this.isPlayerDead = false; //Check if player is dead
+        this.isPlayerDead = false; //Set the player as not dead at first
+        this.shunningIsHappening = false; //Set the player as not being shunned at first
     }
 
     create() {
@@ -35,7 +36,8 @@ class Play extends Phaser.Scene {
     onViewOverlap() {
         //Shunning and screen shake only happens if player is alive (doesn't get stuuck in a shake at end)
         if (!this.isPlayerDead) {
-            console.log('SHUNNING IS HAPPENING!!!');
+            //SHUNNING IS HAPPENNING
+            this.shunningIsHappening = true;
             // Screen shake while overlap is happening
             this.cameras.main.shake(100, 0.02);
         }
@@ -52,7 +54,7 @@ class Play extends Phaser.Scene {
 
         // Set up a timer that increments the timerValue every sec
         this.timerEvent = this.time.addEvent({
-            delay: 100,
+            delay: 1000,
             callback: this.incrementTimer,
             callbackScope: this,
             loop: true
@@ -125,7 +127,8 @@ class Play extends Phaser.Scene {
         this.people = this.physics.add.group();
 
         for (let i = 0; i < 30; i++) {
-            const person = new Person(this, 100, 100);
+            //passing the player and the shunning state when we create the person
+            const person = new Person(this, 100, 100, this.player, () => this.shunningIsHappening);
             this.people.add(person);
             person.setup();
 
@@ -227,6 +230,14 @@ class Play extends Phaser.Scene {
 
 
     update() {
+
+        if (this.player) {
+            // Update each person
+            this.people.getChildren().forEach(person => {
+                person.update();
+            });
+        }
+
         // Only carry on if the player exists
         if (this.player) {
 
@@ -270,6 +281,9 @@ class Play extends Phaser.Scene {
             this.graphics.fillStyle(0xffff00, 0); //second number is alpha value
             this.graphics.fillTriangleShape(this.triangle);
 
+            // Set no overlap at first
+            let overlapDetected = false;
+
             // Check for overlap with graves
             this.graves.getChildren().forEach(grave => {
                 const graveBounds = grave.getBounds();
@@ -277,9 +291,15 @@ class Play extends Phaser.Scene {
                 // Check if the triangle intersects the grave's bounding rectangle
                 if (Phaser.Geom.Intersects.RectangleToTriangle(graveBounds, this.triangle)) {
                     this.onViewOverlap(this.view, grave);
+                    overlapDetected = true; // Overlap found
                 }
             });
 
+            // If no overlap was detected, reset the shunning state
+            if (!overlapDetected) {
+                this.shunningIsHappening = false;
+
+            }
             //Handle player movement (if they exist)
             const { left, right, up, down } = this.cursors;
 
