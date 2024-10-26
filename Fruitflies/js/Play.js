@@ -5,6 +5,8 @@ class Play extends Phaser.Scene {
         });
         this.isPlayerDead = false; //Set the player as not dead at first
         this.shunningIsHappening = false; //Set the player as not being shunned at first
+        this.reduceHealthTimer = null; //A timer to control health reduction so it's not too quick
+        this.frameCounter = 0; // Set up frame counter (need this to slow health reduction)
     }
 
     create() {
@@ -19,6 +21,8 @@ class Play extends Phaser.Scene {
         this.choosePerson();
         this.playerLife();
 
+        //Craete the healthbar
+        this.healthbar = new Healthbar(this, 470, 60);
 
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
@@ -38,10 +42,27 @@ class Play extends Phaser.Scene {
         if (!this.isPlayerDead) {
             //SHUNNING IS HAPPENNING
             this.shunningIsHappening = true;
+
             // Screen shake while overlap is happening
             this.cameras.main.shake(100, 0.02);
+
+            // Start or reset the health reduction timer if it's not running
+            if (!this.reduceHealthTimer) {
+                this.reduceHealthTimer = this.time.addEvent({
+                    delay: 1000, // Delay in ms, e.g., 1000ms = 1 second
+                    callback: () => {
+                        if (this.shunningIsHappening) {
+                            this.healthbar.reduceHealth();
+                        }
+                    },
+                    callbackScope: this,
+                    loop: true,
+                });
+            }
         }
     }
+
+
 
     playerLife() {
         this.timerValue = 0;
@@ -294,6 +315,25 @@ class Play extends Phaser.Scene {
                     overlapDetected = true; // Overlap found
                 }
             });
+            //Counting frames to reduce speed of health reduction if shunning is happening
+            if (this.shunningIsHappening) {
+                // Count up on the frame counter
+                this.frameCounter++;
+
+                // Reduce health every 10 frames
+                if (this.frameCounter >= 10) {
+                    this.healthbar.reduceHealth();
+                    this.frameCounter = 0; // Reset the frame counter
+                }
+            } else {
+                // Reset the frame counter when shunning is not happening
+                this.frameCounter = 0;
+            }
+
+            if (!this.shunningIsHappening && this.reduceHealthTimer) {
+                this.reduceHealthTimer.remove();
+                this.reduceHealthTimer = null;
+            }
 
             // If no overlap was detected, reset the shunning state
             if (!overlapDetected) {

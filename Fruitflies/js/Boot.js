@@ -42,6 +42,12 @@ class Boot extends Phaser.Scene {
         //Load the image of Good Innings text
         this.load.image('innings', 'assets/images/innings.png',);
 
+        //Load the image of empty health bar
+        this.load.image('healthbar', 'assets/images/healthbar.png',);
+
+        //Load the image of health segment
+        this.load.image('healthSegment', 'assets/images/healthSegment.png',);
+
         //Load the spritesheet for player and people
         this.load.spritesheet('blinkgif', 'assets/images/blinksheet_100px.png', { frameWidth: 50, frameHeight: 94 });
 

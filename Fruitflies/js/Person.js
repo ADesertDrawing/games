@@ -92,6 +92,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         const playerX = this.player.x;
         const playerY = this.player.y;
 
+        //Everyone stops moving whilst shunning is happening
+        this.setVelocity(0, 0);
+
         if (personX < playerX && personY < playerY) {
             this.play(`upleft`, true);
         }
