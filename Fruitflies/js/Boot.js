@@ -39,6 +39,9 @@ class Boot extends Phaser.Scene {
         //Load the 4th blink image of a big player for the intro
         this.load.image('bigBlink4', 'assets/images/bigBlink4.png',);
 
+        //Load the image of Oh Shame text
+        this.load.image('ohshame', 'assets/images/ohshame.png',);
+
         //Load the image of Good Innings text
         this.load.image('innings', 'assets/images/innings.png',);
 

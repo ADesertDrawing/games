@@ -27,7 +27,8 @@ class Play extends Phaser.Scene {
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
 
-        //Create the blink gif
+        //Create the blink gif, rmoving any that exist previously
+        this.anims.remove('blinkgif');
         this.anims.create({
             key: 'blinkgif',
             frames: this.anims.generateFrameNumbers('blinkgif', { start: 0, end: 4 }),
@@ -63,7 +64,6 @@ class Play extends Phaser.Scene {
     }
 
 
-
     playerLife() {
         this.timerValue = 0;
 
@@ -88,18 +88,27 @@ class Play extends Phaser.Scene {
         } else {
             // Stop the Life timer when it reaches 99
             this.timerEvent.remove();
-            this.player99Death();
+            this.playerDeath();
         }
     }
 
-    player99Death() {
+    //Player dies
+    playerDeath() {
+
+
+        // Ensure player death only happens once
+        if (this.isPlayerDead || !this.player) return;
 
         //Set the checker to true when player is dead
         this.isPlayerDead = true;
+        // Stop shunning if dead
+        this.shunningIsHappening = false;
 
         // Freeze the player and make them face the front (surprised look)
-        this.player.setVelocity(0, 0); // Stop moving
-        this.player.play('down', true); // Face front
+        if (this.player.body) { // Only try to set velocity if player exists and has a body
+            this.player.setVelocity(0, 0); // Stop moving
+            this.player.play('down', true); // Face front
+        }
 
         // Delay before blink
         this.time.delayedCall(1000, () => { // 1sec pause
@@ -129,18 +138,66 @@ class Play extends Phaser.Scene {
                     // Remove the blink sprite after the animation completes
                     blinkSprite.destroy();
 
-                    // Show the 'innings' image in the center after a short delay
-                    this.time.delayedCall(1500, () => {
-                        this.add.image(400, 300, 'innings')
-                            .setDepth(720)
-                            .setScale(0.15);
-
-
-                        this.graphics.clear();
-                    });
+                    // Check if the player died by timer or health bar reaching zero
+                    if (this.timerValue === 99) {
+                        this.player99DeathEnding();
+                    } else if (this.healthbar.currentSegments === 0) {
+                        this.playerOhShameEnding();
+                    }
                 });
             });
         });
+    }
+
+    player99DeathEnding() {
+        this.time.delayedCall(1500, () => {
+            this.add.image(400, 300, 'innings')
+                .setDepth(720)
+                .setScale(0.15);
+            this.graphics.clear();
+            this.fadeAndRestart();
+        });
+    }
+
+    playerOhShameEnding() {
+        this.time.delayedCall(1500, () => {
+            this.add.image(400, 300, 'ohshame')
+                .setDepth(720)
+                .setScale(0.15);
+            this.graphics.clear();
+            this.fadeAndRestart();
+        });
+    }
+
+    fadeAndRestart() {
+        // Create a white overlay that covers the entire screen
+        const fader = this.add.rectangle(400, 300, 800, 600, 0xffffff);
+        fader.setAlpha(0);
+        fader.setDepth(1100);
+
+        // Delay for 3 seconds, then start the fade-to-white tween
+        this.time.delayedCall(3000, () => {
+            this.tweens.add({
+                targets: fader,
+                alpha: 1, // Tween opacity from 0 to 1
+                duration: 7000, // 1sec
+                onComplete: () => {
+                    this.time.delayedCall(3000, () => {
+                        this.restartGame(); // Reset the game once the fade is complete
+                    });
+                }
+            });
+        }, [], this);
+    }
+
+    restartGame() {
+        this.isPlayerDead = false; // Reset the player death status
+        this.shunningIsHappening = false; // Reset shunning status
+        this.reduceHealthTimer = null; //Reset health timer
+        this.frameCounter = 0; //Reset Life counter
+
+        // Go back to the start
+        this.scene.start('title');
     }
 
     //the NPCs appearing randomly and wandering about

@@ -34,6 +34,10 @@ class Healthbar {
             segmentToHide.setVisible(false);
             this.currentSegments--;
         }
+        //If health hits zero, trigger player death
+        if (this.currentSegments === 0 && this.scene.player) {
+            this.scene.playerDeath();
+        }
     }
 
     restoreHealth() {
