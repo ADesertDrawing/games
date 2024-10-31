@@ -21,6 +21,9 @@ class Boot extends Phaser.Scene {
         //Load the image of life box
         this.load.image('lifebox', 'assets/images/lifebox.png',);
 
+        //Load the image of Age box
+        this.load.image('Age', 'assets/images/Age.png',);
+
         //Load the image of Fruitflies text
         this.load.image('fruitfliesTitle', 'assets/images/fruitfliesTitle.png',);
 
@@ -39,8 +42,14 @@ class Boot extends Phaser.Scene {
         //Load the 4th blink image of a big player for the intro
         this.load.image('bigBlink4', 'assets/images/bigBlink4.png',);
 
-        //Load the image of Oh Shame text
-        this.load.image('ohshame', 'assets/images/ohshame.png',);
+        //Load the image of Oh  text
+        this.load.image('Oh', 'assets/images/Oh.png',);
+
+        //Load the image of Shame  text
+        this.load.image('Shame', 'assets/images/Shame.png',);
+
+        //Load the image of You Made It To text
+        this.load.image('YouMadeItTo', 'assets/images/YouMadeItTo.png',);
 
         //Load the image of Good Innings text
         this.load.image('innings', 'assets/images/innings.png',);

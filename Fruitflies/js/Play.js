@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.image = this.add.image(400, 300, 'border');
-        this.image = this.add.image(90, 60, 'lifebox').setDepth(700).setScale(0.15);
+        this.image = this.add.image(85, 60, 'Age').setDepth(700).setScale(0.16);
 
         this.playerAnimation();
         this.viewAnimation();
@@ -50,7 +50,7 @@ class Play extends Phaser.Scene {
             // Start or reset the health reduction timer if it's not running
             if (!this.reduceHealthTimer) {
                 this.reduceHealthTimer = this.time.addEvent({
-                    delay: 1000, // Delay in ms, e.g., 1000ms = 1 second
+                    delay: 800, // Delay in ms
                     callback: () => {
                         if (this.shunningIsHappening) {
                             this.healthbar.reduceHealth();
@@ -68,14 +68,14 @@ class Play extends Phaser.Scene {
         this.timerValue = 0;
 
         // Create a text object to display the timer
-        this.timerText = this.add.text(100, 42, `${this.timerValue}`, {
+        this.timerText = this.add.text(100, 44, `${this.timerValue}`, {
             fontSize: '40px',
             fill: '#000000',
         }).setDepth(710);
 
         // Set up a timer that increments the timerValue every sec
         this.timerEvent = this.time.addEvent({
-            delay: 1000,
+            delay: 800,
             callback: this.incrementTimer,
             callbackScope: this,
             loop: true
@@ -94,7 +94,6 @@ class Play extends Phaser.Scene {
 
     //Player dies
     playerDeath() {
-
 
         // Ensure player death only happens once
         if (this.isPlayerDead || !this.player) return;
@@ -143,6 +142,10 @@ class Play extends Phaser.Scene {
                         this.player99DeathEnding();
                     } else if (this.healthbar.currentSegments === 0) {
                         this.playerOhShameEnding();
+                        // Stop the timer to after death
+                        if (this.timerEvent) {
+                            this.timerEvent.remove();
+                        }
                     }
                 });
             });
@@ -160,12 +163,40 @@ class Play extends Phaser.Scene {
     }
 
     playerOhShameEnding() {
+
+        // Save the final timer value
+        const finalTimerValue = this.timerValue;
+
+        //Show Oh message
         this.time.delayedCall(1500, () => {
-            this.add.image(400, 300, 'ohshame')
+            this.add.image(335, 300, 'Oh')
                 .setDepth(720)
                 .setScale(0.15);
-            this.graphics.clear();
-            this.fadeAndRestart();
+
+            //Show Shame message
+            this.time.delayedCall(1500, () => {
+                this.add.image(450, 300, 'Shame')
+                    .setDepth(720)
+                    .setScale(0.15);
+
+                //Show You made it to image and then the final age (unless it's 99)
+                this.time.delayedCall(1500, () => {
+                    this.add.image(400, 400, `YouMadeItTo`)
+                        .setDepth(720)
+                        .setScale(0.15),
+
+                        //Add the final timer value
+                        this.add.text(498, 402, finalTimerValue, {
+                            fontSize: `38px`,
+                            color: `#000`
+                        })
+                            .setOrigin(0.5)
+                            .setDepth(721);
+
+                    this.graphics.clear();
+                    this.fadeAndRestart();
+                });
+            });
         });
     }
 
@@ -378,7 +409,7 @@ class Play extends Phaser.Scene {
                 this.frameCounter++;
 
                 // Reduce health every 10 frames
-                if (this.frameCounter >= 10) {
+                if (this.frameCounter >= 8) {
                     this.healthbar.reduceHealth();
                     this.frameCounter = 0; // Reset the frame counter
                 }
