@@ -133,6 +133,10 @@ class Play extends Phaser.Scene {
                     this.add.image(this.player.x, this.player.y, 'grave')
                         .setScale(0.5)
                         .setDepth(this.player.y);
+                    //add image of grave shadow to player grave
+                    this.add.image(this.player.x + 32, this.player.y + 22, 'graveshadow')
+                        .setScale(0.15)
+                        .setDepth(-10);
 
                     // Remove the blink sprite after the animation completes
                     blinkSprite.destroy();
@@ -332,6 +336,10 @@ class Play extends Phaser.Scene {
                         .setDepth(y);
                     //Add it to the graves group
                     this.graves.add(graveSprite);
+                    //add image of grave shadow
+                    this.add.image(x + 32, y + 22, 'graveshadow')
+                        .setScale(0.15)
+                        .setDepth(-10);
                 });
             });
         }

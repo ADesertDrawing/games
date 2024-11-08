@@ -12,6 +12,12 @@ class Boot extends Phaser.Scene {
         //Load the image of grave
         this.load.image('grave', 'assets/images/grave.png',);
 
+        //Load the image of grave shadow
+        this.load.image(`graveshadow`, `assets/images/graveshadow.png`,)
+
+        //Load the person shadow
+        this.load.image(`personshadow`, `assets/images/pesonshadow.png`)
+
         //Load the image of border
         this.load.image('border', 'assets/images/border.png',);
 
@@ -42,10 +48,10 @@ class Boot extends Phaser.Scene {
         //Load the 4th blink image of a big player for the intro
         this.load.image('bigBlink4', 'assets/images/bigBlink4.png',);
 
-        //Load the image of Oh  text
+        //Load the image of Oh text
         this.load.image('Oh', 'assets/images/Oh.png',);
 
-        //Load the image of Shame  text
+        //Load the image of Shame text
         this.load.image('Shame', 'assets/images/Shame.png',);
 
         //Load the image of You Made It To text
