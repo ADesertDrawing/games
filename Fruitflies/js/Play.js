@@ -244,7 +244,7 @@ class Play extends Phaser.Scene {
     peopleAnimation() {
         this.people = this.physics.add.group();
 
-        for (let i = 0; i < 30; i++) {
+        for (let i = 0; i < 40; i++) {
             //passing the player and the shunning state when we create the person
             const person = new Person(this, 100, 100, this.player, () => this.shunningIsHappening);
             this.people.add(person);
@@ -294,7 +294,7 @@ class Play extends Phaser.Scene {
     choosePerson() {
         //  Remove one child from the display list every...
         const timedEvent = this.time.addEvent({
-            delay: Phaser.Math.Between(2000, 3000),
+            delay: Phaser.Math.Between(1800, 2500),
             callback: this.onEvent,
             callbackScope: this,
             loop: true
