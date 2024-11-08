@@ -16,7 +16,7 @@ class Boot extends Phaser.Scene {
         this.load.image(`graveshadow`, `assets/images/graveshadow.png`,)
 
         //Load the person shadow
-        this.load.image(`personshadow`, `assets/images/pesonshadow.png`)
+        this.load.image(`personshadow`, `assets/images/personshadow.png`)
 
         //Load the image of border
         this.load.image('border', 'assets/images/border.png',);

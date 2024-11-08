@@ -12,13 +12,22 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setCollideWorldBounds(true);
         this.setVelocity(100, -100);
         this.changeDirection();
+        this.makeShadow();
     }
 
     create() {
 
-        super.create();
-
     }
+    makeShadow() {
+        //Create the shadows for the people
+        if (!this.shadow) { //only create a shadow if it doesn't already exist
+            this.shadow = this.scene.add.image(this.x + 38, this.y + 26, 'personshadow')
+                .setScale(0.50)
+                .setDepth(-10);
+        }
+    }
+
+
 
     changeDirection() {
         //    console.log(this);
@@ -119,15 +128,24 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         else if (personY > playerY) {
             this.play(`down`, true);
         }
-
-
     }
 
+    destroy() {
+        if (this.shadow) {
+            this.shadow.destroy();
+            this.shadow = null;
+        }
+        super.destroy(); // Call the parent destroy method
+    }
 
     update() {
 
         this.setAnimation();
 
+        //Check shadow exists then make the shadow follow the person
+        if (this.shadow) {
+            this.shadow.setPosition(this.x + 38, this.y + 26);
+        }
     }
 
 }

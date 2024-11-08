@@ -27,7 +27,7 @@ class Play extends Phaser.Scene {
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
 
-        //Create the blink gif, rmoving any that exist previously
+        //Create the blink animation (not a gif), removing any that exist previously
         this.anims.remove('blinkgif');
         this.anims.create({
             key: 'blinkgif',
@@ -35,6 +35,10 @@ class Play extends Phaser.Scene {
             frameRate: 8,
             repeat: 0 //no loop
         });
+        //Create the shadow for the player
+        this.shadow = this.add.image(this.player.x + 38, this.player.y + 26, 'personshadow')
+            .setScale(0.50)
+            .setDepth(-10);
     }
 
     // Callback function for when the triangle (with the view) overlaps with a grave
@@ -138,8 +142,9 @@ class Play extends Phaser.Scene {
                         .setScale(0.15)
                         .setDepth(-10);
 
-                    // Remove the blink sprite after the animation completes
+                    // Remove the blink and shadow sprites after the animation completes
                     blinkSprite.destroy();
+                    this.shadow.destroy();
 
                     // Check if the player died by timer or health bar reaching zero
                     if (this.timerValue === 99) {
@@ -248,8 +253,6 @@ class Play extends Phaser.Scene {
         }
         // Choosing a random point in the canvas and popping a person in there
         Phaser.Actions.RandomRectangle(this.people.getChildren(), this.physics.world.bounds);
-        // this.physics.add.collider(this.people, this.player);
-
     }
 
     viewAnimation() {
@@ -279,8 +282,6 @@ class Play extends Phaser.Scene {
     playerAnimation() {
         //Creating the player animations to face the 8 directions 
         //depending on direction of travel
-
-        //  console.log("temp")
 
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
@@ -318,6 +319,11 @@ class Play extends Phaser.Scene {
             // Destroy the surprised look person after 1.5s
             this.time.delayedCall(1500, () => {
                 surprisedLook.destroy();
+
+                // Destroy the shadow if it exists
+                if (child.shadow) {
+                    child.shadow.destroy();  // Destroys the shadow of the person
+                }
 
                 // Add the blink sprite
                 const blinkSprite = this.physics.add.sprite(x, y, 'blinkgif')
@@ -357,6 +363,10 @@ class Play extends Phaser.Scene {
 
         // Only carry on if the player exists
         if (this.player) {
+
+            //Make the shadow follow the player if alive
+            this.shadow.setPosition(this.player.x + 38, this.player.y + 26);
+
 
             // Set the people depth to the y value     
             this.people.getChildren().forEach((sprite) => {

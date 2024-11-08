@@ -1,2 +1,2 @@
-Fruitflies is a game by A Desert Drawing, with an enormous amount of help from Pippin Barr.
+Fruitflies is a game by A Desert Drawing (with lots of help from Pippin Barr).
 
