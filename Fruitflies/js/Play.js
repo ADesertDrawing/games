@@ -22,7 +22,7 @@ class Play extends Phaser.Scene {
         this.playerLife();
 
         //Create the healthbar
-        this.healthbar = new Healthbar(this, 470, 60); //This isn't loading from pages....
+        this.healthbar = new Healthbar(this, 470, 60); //This isn't loading from pages(changed to small h in pages)
 
         // Create a group for grave sprites
         this.graves = this.physics.add.group();
