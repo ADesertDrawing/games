@@ -215,6 +215,8 @@ class Play extends Phaser.Scene {
         fader.setAlpha(0);
         fader.setDepth(1100);
 
+
+
         // Delay for 3 seconds, then start the fade-to-white tween
         this.time.delayedCall(3000, () => {
             this.tweens.add({
@@ -227,6 +229,17 @@ class Play extends Phaser.Scene {
                     });
                 }
             });
+            //Fade music if it exists
+            if (window.bgMusic) {
+                this.tweens.add({
+                    targets: window.bgMusic, // Target the global bgMusic
+                    volume: 0, // Fade volume to 0
+                    duration: 7000, // Match visual fade duration
+                    onComplete: () => {
+                        window.bgMusic.stop(); // Stop music once the fade-out is complete
+                    }
+                });
+            }
         }, [], this);
     }
 

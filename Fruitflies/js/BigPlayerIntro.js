@@ -10,6 +10,12 @@ class BigPlayerIntro extends Phaser.Scene {
     }
 
     create() {
+
+        //Start the music, stored in a global variable
+        window.bgMusic = this.sound.add('bgMusic', { volume: 1, loop: true });
+        window.bgMusic.play();
+
+
         //Gap between each frame in the blink animation
         const blinkTime = 20;
         //Adding border and Big Player images
