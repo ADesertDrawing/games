@@ -537,7 +537,7 @@ class Play extends Phaser.Scene {
             const staticVolumeFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 1);
 
             // Amplify static volume to make it more noticeable
-            const amplifiedStaticVolume = staticVolumeFactor * 4; // Increase multiplier as needed
+            const amplifiedStaticVolume = staticVolumeFactor * 6; // Increase multiplier as needed
 
             // Set the volumes
             window.bgMusic.setVolume(musicVolumeFactor);
