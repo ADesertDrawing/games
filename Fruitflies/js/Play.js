@@ -188,23 +188,23 @@ class Play extends Phaser.Scene {
                     .setDepth(720)
                     .setScale(0.15);
 
-                //Show You made it to image and then the final age (unless it's 99)
-                this.time.delayedCall(1500, () => {
-                    this.add.image(400, 400, `YouMadeItTo`)
-                        .setDepth(720)
-                        .setScale(0.15),
+                // //Show You made it to image and then the final age (unless it's 99)
+                // this.time.delayedCall(1500, () => {
+                //     this.add.image(400, 400, `YouMadeItTo`)
+                //         .setDepth(720)
+                //         .setScale(0.15),
 
-                        //Add the final timer value
-                        this.add.text(498, 402, finalTimerValue, {
-                            fontSize: `38px`,
-                            color: `#000`
-                        })
-                            .setOrigin(0.5)
-                            .setDepth(721);
+                //         //Add the final timer value
+                //         this.add.text(498, 402, finalTimerValue, {
+                //             fontSize: `38px`,
+                //             color: `#000`
+                //         })
+                //             .setOrigin(0.5)
+                //             .setDepth(721);
 
-                    this.graphics.clear();
-                    this.fadeAndRestart();
-                });
+                this.graphics.clear();
+                this.fadeAndRestart();
+                // });
             });
         });
     }
