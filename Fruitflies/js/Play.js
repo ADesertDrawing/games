@@ -188,20 +188,6 @@ class Play extends Phaser.Scene {
                     .setDepth(720)
                     .setScale(0.15);
 
-                // //Show You made it to image and then the final age (unless it's 99)
-                // this.time.delayedCall(1500, () => {
-                //     this.add.image(400, 400, `YouMadeItTo`)
-                //         .setDepth(720)
-                //         .setScale(0.15),
-
-                //         //Add the final timer value
-                //         this.add.text(498, 402, finalTimerValue, {
-                //             fontSize: `38px`,
-                //             color: `#000`
-                //         })
-                //             .setOrigin(0.5)
-                //             .setDepth(721);
-
                 this.graphics.clear();
                 this.fadeAndRestart();
                 // });
@@ -215,14 +201,12 @@ class Play extends Phaser.Scene {
         fader.setAlpha(0);
         fader.setDepth(1100);
 
-
-
         // Delay for 3 seconds, then start the fade-to-white tween
         this.time.delayedCall(3000, () => {
             this.tweens.add({
                 targets: fader,
                 alpha: 1, // Tween opacity from 0 to 1
-                duration: 7000, // 1sec
+                duration: 7000, // 7 secs
                 onComplete: () => {
                     this.time.delayedCall(3000, () => {
                         this.restartGame(); // Reset the game once the fade is complete
@@ -231,12 +215,14 @@ class Play extends Phaser.Scene {
             });
             //Fade music if it exists
             if (window.bgMusic) {
+                this.musicFadingOut = true; // Prevent edge-based adjustments
                 this.tweens.add({
                     targets: window.bgMusic, // Target the global bgMusic
                     volume: 0, // Fade volume to 0
                     duration: 7000, // Match visual fade duration
                     onComplete: () => {
                         window.bgMusic.stop(); // Stop music once the fade-out is complete
+                        this.musicFadingOut = false; // Reset for future use
                     }
                 });
             }
@@ -517,6 +503,26 @@ class Play extends Phaser.Scene {
                     this.view.rotation = 2.25;
                 }
             }
+        }
+        //Quieten the music if the player goes near the edge
+        if (this.player && window.bgMusic && !this.musicFadingOut) {
+            const playerX = this.player.x;
+            const playerY = this.player.y;
+
+            // Calculate how far the player is from the edges
+            const distanceToLeft = Math.max(0, playerX - 100); // 100 pixels from the left
+            const distanceToRight = Math.max(0, 800 - 100 - playerX); // 100 pixels from the right
+            const distanceToTop = Math.max(0, playerY - 75); // 75 pixels from the top
+            const distanceToBottom = Math.max(0, 600 - 75 - playerY); // 75 pixels from the bottom
+
+            // Find the minimum distance to any edge
+            const minDistance = Math.min(distanceToLeft, distanceToRight, distanceToTop, distanceToBottom);
+
+            // Normalize the distance to a 0-1 range (0 = fully quiet, 1 = fully clear)
+            const volumeFactor = Phaser.Math.Clamp(minDistance / 150, 0.05, 1);
+
+            // Set the volume of the music (quiet at edges, clear in the center)
+            window.bgMusic.setVolume(volumeFactor);
         }
     }
 }
