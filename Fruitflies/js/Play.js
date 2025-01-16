@@ -227,6 +227,18 @@ class Play extends Phaser.Scene {
                 });
             }
         }, [], this);
+
+        // Fade static sound if it exists
+        if (window.staticSound) {
+            this.tweens.add({
+                targets: window.staticSound, // Target the global static sound
+                volume: 0, // Fade volume to 0
+                duration: 7000, // Match visual fade duration
+                onComplete: () => {
+                    window.staticSound.stop(); // Stop static sound once the fade-out is complete
+                }
+            });
+        }
     }
 
     restartGame() {
@@ -505,7 +517,7 @@ class Play extends Phaser.Scene {
             }
         }
         //Quieten the music if the player goes near the edge
-        if (this.player && window.bgMusic && !this.musicFadingOut) {
+        if (this.player && window.bgMusic && window.staticSound && !this.musicFadingOut) {
             const playerX = this.player.x;
             const playerY = this.player.y;
 
@@ -518,11 +530,19 @@ class Play extends Phaser.Scene {
             // Find the minimum distance to any edge
             const minDistance = Math.min(distanceToLeft, distanceToRight, distanceToTop, distanceToBottom);
 
-            // Normalize the distance to a 0-1 range (0 = fully quiet, 1 = fully clear)
-            const volumeFactor = Phaser.Math.Clamp(minDistance / 150, 0.05, 1);
+            // Normalize the distance for music volume (0 = fully quiet, 1 = fully clear)
+            const musicVolumeFactor = Phaser.Math.Clamp(minDistance / 150, 0.05, 1);
 
-            // Set the volume of the music (quiet at edges, clear in the center)
-            window.bgMusic.setVolume(volumeFactor);
+            // Inverse of normalized distance for static volume (0 = fully loud, 1 = silent)
+            const staticVolumeFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 1);
+
+            // Amplify static volume to make it more noticeable
+            const amplifiedStaticVolume = staticVolumeFactor * 4; // Increase multiplier as needed
+
+            // Set the volumes
+            window.bgMusic.setVolume(musicVolumeFactor);
+            window.staticSound.setVolume(Phaser.Math.Clamp(amplifiedStaticVolume, 0, 1)); // Ensure it stays within 0-1
+
         }
     }
 }

@@ -10,6 +10,9 @@ class Boot extends Phaser.Scene {
         //Load the background music
         this.load.audio(`bgMusic`, `assets/sounds/Spencer_Adams_No_Use_Crying_1922.mp3`,);
 
+        //Load the static noise
+        this.load.audio(`static`, `assets/sounds/static3.mp3`,);
+
         //Load the player view/perspective triangle
         this.load.image(`view`, `assets/images/view.png`,);
 

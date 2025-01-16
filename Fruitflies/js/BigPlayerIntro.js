@@ -15,6 +15,11 @@ class BigPlayerIntro extends Phaser.Scene {
         window.bgMusic = this.sound.add('bgMusic', { volume: 1, loop: true });
         window.bgMusic.play();
 
+        //Start the Static sound, stored in a global variable
+        window.staticSound = this.sound.add('static', { loop: true });
+        window.staticSound.play();
+        window.staticSound.setVolume(0); // Start with volume 0
+
 
         //Gap between each frame in the blink animation
         const blinkTime = 20;
