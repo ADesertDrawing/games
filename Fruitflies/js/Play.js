@@ -13,7 +13,7 @@ class Play extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.image = this.add.image(400, 300, 'border');
-        this.image = this.add.image(85, 60, 'Age').setDepth(700).setScale(0.16);
+        this.image = this.add.image(85, 60, 'Age').setDepth(1000).setScale(0.16);
 
         this.playerAnimation();
         this.viewAnimation();
@@ -39,6 +39,11 @@ class Play extends Phaser.Scene {
         this.shadow = this.add.image(this.player.x + 38, this.player.y + 26, 'personshadow')
             .setScale(0.50)
             .setDepth(-10);
+
+        // Initialize edgeFader
+        this.edgeFader = this.add.rectangle(400, 300, 800, 600, 0xffffff);
+        this.edgeFader.setAlpha(0); // Start fully transparent
+        this.edgeFader.setDepth(900); // Ensure proper layering
     }
 
     // Callback function for when the triangle (with the view) overlaps with a grave
@@ -75,7 +80,7 @@ class Play extends Phaser.Scene {
         this.timerText = this.add.text(100, 44, `${this.timerValue}`, {
             fontSize: '40px',
             fill: '#000000',
-        }).setDepth(710);
+        }).setDepth(1001);
 
         // Set up a timer that increments the timerValue every sec
         this.timerEvent = this.time.addEvent({
@@ -165,13 +170,13 @@ class Play extends Phaser.Scene {
         //Show Huh message
         this.time.delayedCall(1500, () => {
             this.add.image(315, 300, 'huh')
-                .setDepth(720)
+                .setDepth(1000)
                 .setScale(0.15);
 
             //Show Good innings message
             this.time.delayedCall(1500, () => {
                 this.add.image(475, 300, 'goodinnings')
-                    .setDepth(720)
+                    .setDepth(1000)
                     .setScale(0.15);
 
                 this.graphics.clear();
@@ -188,13 +193,13 @@ class Play extends Phaser.Scene {
         //Show Oh message
         this.time.delayedCall(1500, () => {
             this.add.image(335, 300, 'Oh')
-                .setDepth(720)
+                .setDepth(1000)
                 .setScale(0.15);
 
             //Show Shame message
             this.time.delayedCall(1500, () => {
                 this.add.image(450, 300, 'Shame')
-                    .setDepth(720)
+                    .setDepth(1000)
                     .setScale(0.15);
 
                 this.graphics.clear();
@@ -256,6 +261,11 @@ class Play extends Phaser.Scene {
         this.reduceHealthTimer = null; //Reset health timer
         this.frameCounter = 0; //Reset Life counter
 
+        // Destroy the existing edgeFader
+        if (this.edgeFader) {
+            this.edgeFader.destroy();
+            this.edgeFader = null; // Ensure it gets recreated in the update
+        }
         // Go back to the start
         this.scene.start('title');
     }
@@ -525,6 +535,14 @@ class Play extends Phaser.Scene {
                 }
             }
         }
+        // Create a white rectangle overlay to fade if you go to the edge if it doesn't exist
+        if (!this.edgeFader) {
+
+            this.edgeFader = this.add.rectangle(400, 300, 800, 600, 0xffffff);
+            this.edgeFader.setAlpha(0); // Start fully transparent
+            this.edgeFader.setDepth(900); // Set depth above player/NPCs but below messages/Age/Healthbar
+        }
+
         //Quieten the music if the player goes near the edge
         if (this.player && window.bgMusic && window.staticSound && !this.musicFadingOut) {
             const playerX = this.player.x;
@@ -552,6 +570,11 @@ class Play extends Phaser.Scene {
             window.bgMusic.setVolume(musicVolumeFactor);
             window.staticSound.setVolume(Phaser.Math.Clamp(amplifiedStaticVolume, 0, 1)); // Ensure it stays within 0-1
 
+            //Normalize the fading if you go near the edge effect
+            const visualAlphaFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 0.5); // Max opacity = 0.5
+
+            // Set visual fade opacity
+            this.edgeFader.setAlpha(visualAlphaFactor);
         }
     }
 }
