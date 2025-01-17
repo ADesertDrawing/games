@@ -162,12 +162,21 @@ class Play extends Phaser.Scene {
     }
 
     player99DeathEnding() {
+        //Show Huh message
         this.time.delayedCall(1500, () => {
-            this.add.image(400, 300, 'innings')
+            this.add.image(315, 300, 'huh')
                 .setDepth(720)
                 .setScale(0.15);
-            this.graphics.clear();
-            this.fadeAndRestart();
+
+            //Show Good innings message
+            this.time.delayedCall(1500, () => {
+                this.add.image(475, 300, 'goodinnings')
+                    .setDepth(720)
+                    .setScale(0.15);
+
+                this.graphics.clear();
+                this.fadeAndRestart();
+            });
         });
     }
 

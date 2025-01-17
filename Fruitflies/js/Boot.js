@@ -64,8 +64,11 @@ class Boot extends Phaser.Scene {
         //Load the image of You Made It To text
         this.load.image('YouMadeItTo', 'assets/images/YouMadeItTo.png',);
 
+        //Load the image of Huh text
+        this.load.image('huh', 'assets/images/huh.png',);
+
         //Load the image of Good Innings text
-        this.load.image('innings', 'assets/images/innings.png',);
+        this.load.image('goodinnings', 'assets/images/goodinnings.png',);
 
         //Load the image of empty health bar
         this.load.image('healthbar', 'assets/images/healthbar.png',);
