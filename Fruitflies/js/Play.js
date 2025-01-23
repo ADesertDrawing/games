@@ -571,7 +571,7 @@ class Play extends Phaser.Scene {
             window.staticSound.setVolume(Phaser.Math.Clamp(amplifiedStaticVolume, 0, 1)); // Ensure it stays within 0-1
 
             //Normalize the fading if you go near the edge effect
-            const visualAlphaFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 0.5); // Max opacity = 0.5
+            const visualAlphaFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 0.9); // Max opacity = 0.9
 
             // Set visual fade opacity
             this.edgeFader.setAlpha(visualAlphaFactor);
