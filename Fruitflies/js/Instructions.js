@@ -10,7 +10,7 @@ class Instructions extends Phaser.Scene {
     }
 
     create() {
-        this.image = this.add.image(400, 300, 'instructions').setScale(0.2);
+        this.image = this.add.image(400, 300, 'instructions').setScale(0.4);
         this.image = this.add.image(400, 300, 'border');
 
         // Listen for key press or mouse click to go to Play

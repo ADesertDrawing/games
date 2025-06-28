@@ -25,7 +25,7 @@ class BigPlayerIntro extends Phaser.Scene {
         const blinkTime = 20;
         //Adding border and Big Player images
         this.image = this.add.image(400, 300, 'border');
-        this.personBigImage = this.add.image(400, 850, 'personBig').setScale(.5);
+        this.personBigImage = this.add.image(400, 850, 'personBig').setScale(1);
         //Adding the frames in the blink animation and destroying them one by one
 
         this.time.delayedCall(1500, () => {
@@ -50,7 +50,7 @@ class BigPlayerIntro extends Phaser.Scene {
 
                             this.time.delayedCall(blinkTime, () => {
                                 this.blinkFrame6.destroy();
-                                this.blinkFrame7 = this.add.image(400, 850, 'personBig').setScale(0.5);
+                                this.blinkFrame7 = this.add.image(400, 850, 'personBig').setScale(1);
 
                                 this.time.delayedCall(2000, () => {
                                     this.blinkFrame7.destroy();
@@ -66,13 +66,13 @@ class BigPlayerIntro extends Phaser.Scene {
 
     zoomingOut() {
 
-        this.zoomingImage = this.add.image(400, 850, 'personBig').setScale(0.5);
+        this.zoomingImage = this.add.image(400, 850, 'personBig').setScale(1);
 
         //Tweening the size of the person down to the sprite size
         this.tweens.add({
             targets: this.zoomingImage,
-            scaleX: 0.03,
-            scaleY: 0.03,
+            scaleX: 0.06,
+            scaleY: 0.06,
             x: 400,
             y: 300,
             duration: 1000,
