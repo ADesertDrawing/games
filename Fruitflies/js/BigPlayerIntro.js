@@ -30,23 +30,23 @@ class BigPlayerIntro extends Phaser.Scene {
 
         this.time.delayedCall(1500, () => {
             this.personBigImage.destroy();
-            this.blinkFrame2 = this.add.image(400, 850, 'bigBlink2').setScale(0.5);
+            this.blinkFrame2 = this.add.image(400, 850, 'bigBlink2').setScale(1);
 
             this.time.delayedCall(blinkTime, () => {
                 this.blinkFrame2.destroy();
-                this.blinkFrame3 = this.add.image(400, 850, 'bigBlink3').setScale(0.5);
+                this.blinkFrame3 = this.add.image(400, 850, 'bigBlink3').setScale(1);
 
                 this.time.delayedCall(blinkTime, () => {
                     this.blinkFrame3.destroy();
-                    this.blinkFrame4 = this.add.image(400, 850, 'bigBlink4').setScale(0.5);
+                    this.blinkFrame4 = this.add.image(400, 850, 'bigBlink4').setScale(1);
 
                     this.time.delayedCall(blinkTime, () => {
                         this.blinkFrame4.destroy();
-                        this.blinkFrame5 = this.add.image(400, 850, 'bigBlink3').setScale(0.5);
+                        this.blinkFrame5 = this.add.image(400, 850, 'bigBlink3').setScale(1);
 
                         this.time.delayedCall(blinkTime, () => {
                             this.blinkFrame5.destroy();
-                            this.blinkFrame6 = this.add.image(400, 850, 'bigBlink2').setScale(0.5);
+                            this.blinkFrame6 = this.add.image(400, 850, 'bigBlink2').setScale(1);
 
                             this.time.delayedCall(blinkTime, () => {
                                 this.blinkFrame6.destroy();
