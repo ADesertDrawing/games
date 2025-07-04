@@ -1,7 +1,7 @@
 class Healthbar {
     constructor(scene, x, y) {
         this.scene = scene;
-        this.healthbar = this.scene.add.image(470, 60, 'healthbar').setDepth(1000).setScale(0.30);
+        this.healthbar = this.scene.add.image(470, 60, 'healthbar').setDepth(1000);
         //Making the segments
         this.maxSegments = 30;
         //Making an array to put them in
