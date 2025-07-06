@@ -419,7 +419,7 @@ class Play extends Phaser.Scene {
         this.player = this.physics.add.sprite(400, 300, 'person')
             .play('down')
             .setCollideWorldBounds(true)
-            .setDrag(100)
+            .setDrag(30)
             .setMaxVelocity(200, 200)
             .setDepth(this.y);
     }
