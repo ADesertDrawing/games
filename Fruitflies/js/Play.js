@@ -398,18 +398,10 @@ class Play extends Phaser.Scene {
                     // Remove the blink sprite
                     blinkSprite.destroy();
 
-                    // Remove the person WITHOUT calling destroy() (which would destroy the shadow)
-                    // Instead, manually clean up the person
-                    if (child.body) {
-                        child.body.destroy();
-                    }
-                    child.removeFromDisplayList();
-                    child.removeFromUpdateList();
+                    //Remove the person (shadow will be destroyed here)
+                    child.destroy();
 
-                    // Remove from the people group
-                    this.people.remove(child);
-
-                    // NOW destroy the shadow after everything else is done
+                    //NOW remove the shadow (after the person is destroyed)
                     if (personShadow) {
                         personShadow.destroy();
                     }
@@ -448,6 +440,13 @@ class Play extends Phaser.Scene {
             });
         }
 
+
+
+        // Set the people depth to the y value     
+        this.people.getChildren().forEach((sprite) => {
+            sprite.setDepth(sprite.y);
+        });
+
         // Only carry on if the player exists
         if (this.player) {
 
@@ -455,10 +454,7 @@ class Play extends Phaser.Scene {
             this.shadow.setPosition(playerX + 38, playerY + 26);
 
 
-            // Set the people depth to the y value     
-            this.people.getChildren().forEach((sprite) => {
-                sprite.setDepth(sprite.y);
-            });
+
 
             // Set the player depth to the y value
             this.player.setDepth(playerY);
