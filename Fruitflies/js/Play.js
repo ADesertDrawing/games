@@ -427,7 +427,7 @@ class Play extends Phaser.Scene {
     choosePerson() {
         //  Remove one child from the display list every...
         const timedEvent = this.time.addEvent({
-            delay: Phaser.Math.Between(1800, 2500),
+            delay: Phaser.Math.Between(1200, 1600),
             callback: this.onEvent,
             callbackScope: this,
             loop: true
@@ -440,6 +440,25 @@ class Play extends Phaser.Scene {
             //Grab the x and y of the disappearing person
             const x = child.x;
             const y = child.y;
+
+            // Check if there's enough space around this position for a new grave
+            const minDistance = 70; // Minimum distance between graves 
+            let tooClose = false;
+
+            // Check distance to all existing graves
+            if (this.graves) {
+                this.graves.getChildren().forEach(grave => {
+                    const distance = Phaser.Math.Distance.Between(x, y, grave.x, grave.y);
+                    if (distance < minDistance) {
+                        tooClose = true;
+                    }
+                });
+            }
+
+            // If too close to existing graves, skip this NPC and try again later
+            if (tooClose) {
+                return; // Exit early, this NPC won't die this time
+            }
 
             //stop them moving
             child.setVelocity(0, 0);
