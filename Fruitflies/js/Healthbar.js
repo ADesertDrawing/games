@@ -46,15 +46,35 @@ class Healthbar {
         this.currentSegments = this.maxSegments;
     }
 
+    // Add destroy method to properly clean up healthbar components
+    destroy() {
+        // Destroy the main healthbar image
+        if (this.healthbar) {
+            this.healthbar.destroy();
+            this.healthbar = null;
+        }
+
+        // Destroy all health segments
+        if (this.segments) {
+            this.segments.forEach(segment => {
+                if (segment) {
+                    segment.destroy();
+                }
+            });
+            this.segments = [];
+        }
+
+        // Reset properties
+        this.currentSegments = 0;
+        this.maxSegments = 0;
+        this.scene = null;
+    }
 
     create() {
-
-
 
     }
 
     update() {
 
     }
-
 }
