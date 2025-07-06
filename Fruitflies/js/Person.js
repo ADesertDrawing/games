@@ -6,6 +6,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
         this.player = player;
         this.shunningCheck = shunningCheck;
+        this.shadowVisible = true; // Add flag to control shadow visibility independently
     }
 
     setup() {
@@ -13,6 +14,19 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setVelocity(100, -100);
         this.changeDirection();
         this.makeShadow();
+    }
+
+    preUpdate(time, delta) {
+        super.preUpdate(time, delta);
+        if (this.shadow) {
+            // Show shadow only if both the person would be visible AND shadowVisible flag is true
+            if (this.shadowVisible) {
+                this.shadow.setVisible(true);
+                this.shadow.setPosition(this.x + 38, this.y + 26);
+            } else {
+                this.shadow.setVisible(false);
+            }
+        }
     }
 
     create() {
@@ -30,6 +44,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
 
 
     changeDirection() {
+        if (!this.body) return; // Don't run if already destroyed
         //    console.log(this);
         // Multiply x and y by either -1, 0, or 1 to change direction (or possibly not)
         const newVX = Phaser.Utils.Array.GetRandom([-100, 0, 100]);
@@ -40,8 +55,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.setAnimation();
 
         // Wait a random amount of time then do it again
-        this.scene.time.addEvent({
-            delay: Phaser.Math.Between(10, 1000), // Random delay between changing direction
+        // Save the timer so we can cancel it later
+        this.directionTimer = this.scene.time.addEvent({
+            delay: Phaser.Math.Between(10, 1000),
             callback: () => {
                 this.changeDirection();
             }
@@ -96,6 +112,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     shunningAnimation() {
         //Set up the person and player positions
 
+        //Don't run if the player no longer exists  
+        if (!this.player || !this.player.active) return;
+
         const personX = this.x;
         const personY = this.y;
         const playerX = this.player.x;
@@ -130,12 +149,17 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    destroy() {
+    destroy(fromScene) {
+        // Cancel the timer if it's still running
+        if (this.directionTimer) {
+            this.directionTimer.remove(false);
+            this.directionTimer = null;
+        }
         if (this.shadow) {
             this.shadow.destroy();
             this.shadow = null;
         }
-        super.destroy(); // Call the parent destroy method
+        super.destroy(fromScene); // Call the parent destroy method
     }
 
     update() {

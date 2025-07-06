@@ -107,6 +107,12 @@ class Play extends Phaser.Scene {
         // Ensure player death only happens once
         if (this.isPlayerDead || !this.player) return;
 
+
+        // Stop the timer immediately so it doesn't trigger another death
+        if (this.timerEvent) {
+            this.timerEvent.remove();
+        }
+
         //Set the checker to true when player is dead
         this.isPlayerDead = true;
         // Stop shunning if dead
@@ -118,38 +124,51 @@ class Play extends Phaser.Scene {
             this.player.play('down', true); // Face front
         }
 
+        // Store player position BEFORE destroying
+        const playerX = this.player.x;
+        const playerY = this.player.y;
+
         // Delay before blink
         this.time.delayedCall(1000, () => { // 1sec pause
 
-            // Remove player, view, and graphics after the grave is displayed
-            if (this.player) {
-                this.player.destroy();
-            }
-
             // Play the blink animation after the pause
-            const blinkSprite = this.add.sprite(this.player.x, this.player.y, 'blinkgif')
-                .setDepth(this.player.y)
+            const blinkSprite = this.add.sprite(playerX, playerY, 'blinkgif')
+                .setDepth(playerY)
                 .setScale(1)
                 .play('blinkgif');
 
             blinkSprite.on('animationcomplete', () => {
                 // 1 sec pause after blink, before grave
+
                 this.time.delayedCall(1000, () => {
+
+                    // Remove player, view, and graphics after the grave is displayed
+                    if (this.player) {
+                        this.player.destroy();
+                        this.player = null;
+                    }
+
                     // After blink animation finishes, remove view sprite and add the grave sprite
                     if (this.view) {
                         this.view.destroy();
+                        this.view = null;
                     }
-                    this.add.image(this.player.x, this.player.y, 'grave')
+                    this.add.image(playerX, playerY, 'grave')
                         .setScale(0.5)
-                        .setDepth(this.player.y);
+                        .setDepth(playerY);
+
                     //add image of grave shadow to player grave
-                    this.add.image(this.player.x + 32, this.player.y + 22, 'graveshadow')
+                    this.add.image(playerX + 32, playerY + 22, 'graveshadow')
                         .setScale(0.15)
                         .setDepth(-10);
 
                     // Remove the blink and shadow sprites after the animation completes
                     blinkSprite.destroy();
-                    this.shadow.destroy();
+
+                    if (this.shadow) {
+                        this.shadow.destroy();
+                        this.shadow = null;
+                    }
 
                     // Check if the player died by timer or health bar reaching zero
                     if (this.timerValue === 99) {
@@ -261,6 +280,11 @@ class Play extends Phaser.Scene {
         this.reduceHealthTimer = null; //Reset health timer
         this.frameCounter = 0; //Reset Life counter
 
+        if (this.timerText) {
+            this.timerText.destroy();
+            this.timerText = null;
+        }
+
         // Destroy the existing edgeFader
         if (this.edgeFader) {
             this.edgeFader.destroy();
@@ -337,8 +361,21 @@ class Play extends Phaser.Scene {
             //Grab the x and y of the disappearing person
             const x = child.x;
             const y = child.y;
-            //Remove the person
-            this.people.remove(child, true);
+
+            //stop them moving
+            child.setVelocity(0, 0);
+
+            // Hide them but keep their shadow visible during the entire death sequence
+            child.setVisible(false);
+
+            // Store reference to the shadow so we can control it independently
+            const personShadow = child.shadow;
+
+            // Cancel the person's direction timer to prevent errors
+            if (child.directionTimer) {
+                child.directionTimer.remove(false);
+                child.directionTimer = null;
+            }
 
             // Add the looking forward sprite
             const surprisedLook = this.physics.add.sprite(x, y, 'person')
@@ -349,11 +386,6 @@ class Play extends Phaser.Scene {
             // Destroy the surprised look person after 1.5s
             this.time.delayedCall(1500, () => {
                 surprisedLook.destroy();
-
-                // Destroy the shadow if it exists
-                if (child.shadow) {
-                    child.shadow.destroy();  // Destroys the shadow of the person
-                }
 
                 // Add the blink sprite
                 const blinkSprite = this.physics.add.sprite(x, y, 'blinkgif')
@@ -366,12 +398,30 @@ class Play extends Phaser.Scene {
                     // Remove the blink sprite
                     blinkSprite.destroy();
 
+                    // Remove the person WITHOUT calling destroy() (which would destroy the shadow)
+                    // Instead, manually clean up the person
+                    if (child.body) {
+                        child.body.destroy();
+                    }
+                    child.removeFromDisplayList();
+                    child.removeFromUpdateList();
+
+                    // Remove from the people group
+                    this.people.remove(child);
+
+                    // NOW destroy the shadow after everything else is done
+                    if (personShadow) {
+                        personShadow.destroy();
+                    }
+
                     //Add the grave sprite
                     const graveSprite = this.physics.add.sprite(x, y, `grave`)
                         .setScale(0.5)
                         .setDepth(y);
+
                     //Add it to the graves group
                     this.graves.add(graveSprite);
+
                     //add image of grave shadow
                     this.add.image(x + 32, y + 22, 'graveshadow')
                         .setScale(0.15)
@@ -383,6 +433,13 @@ class Play extends Phaser.Scene {
 
 
     update() {
+        let playerX = 0;
+        let playerY = 0;
+
+        if (this.player) {
+            playerX = this.player.x;
+            playerY = this.player.y;
+        }
 
         if (this.player) {
             // Update each person
@@ -395,7 +452,7 @@ class Play extends Phaser.Scene {
         if (this.player) {
 
             //Make the shadow follow the player if alive
-            this.shadow.setPosition(this.player.x + 38, this.player.y + 26);
+            this.shadow.setPosition(playerX + 38, playerY + 26);
 
 
             // Set the people depth to the y value     
@@ -404,11 +461,11 @@ class Play extends Phaser.Scene {
             });
 
             // Set the player depth to the y value
-            this.player.setDepth(this.player.y);
+            this.player.setDepth(playerY);
 
             // Make the view sprite follow the position of the player
-            this.view.x = this.player.x;
-            this.view.y = this.player.y + 45;
+            this.view.x = playerX;
+            this.view.y = playerY + 45;
 
             // Define the base triangle shape
             const baseX1 = -70;
@@ -545,8 +602,7 @@ class Play extends Phaser.Scene {
 
         //Quieten the music if the player goes near the edge
         if (this.player && window.bgMusic && window.staticSound && !this.musicFadingOut) {
-            const playerX = this.player.x;
-            const playerY = this.player.y;
+
 
             // Calculate how far the player is from the edges
             const distanceToLeft = Math.max(0, playerX - 100); // 100 pixels from the left
