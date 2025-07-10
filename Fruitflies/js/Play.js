@@ -48,13 +48,13 @@ class Play extends Phaser.Scene {
 
     // Callback function for when the triangle (with the view) overlaps with a grave
     onViewOverlap() {
-        //Shunning and screen shake only happens if player is alive (doesn't get stuuck in a shake at end)
+        //Shunning and screen shake only happens if player is alive (doesn't get stuck in a shake at end)
         if (!this.isPlayerDead) {
             //SHUNNING IS HAPPENNING
             this.shunningIsHappening = true;
 
             // Screen shake while overlap is happening
-            this.cameras.main.shake(100, 0.02);
+            this.cameras.main.shake(50, 0.02);
 
             // Start or reset the health reduction timer if it's not running
             if (!this.reduceHealthTimer) {
@@ -427,7 +427,7 @@ class Play extends Phaser.Scene {
     choosePerson() {
         //  Remove one child from the display list every...
         const timedEvent = this.time.addEvent({
-            delay: Phaser.Math.Between(1200, 1600),
+            delay: Phaser.Math.Between(1000, 1500),
             callback: this.onEvent,
             callbackScope: this,
             loop: true
@@ -636,8 +636,8 @@ class Play extends Phaser.Scene {
                 this.reduceHealthTimer = null;
             }
 
-            //Handle player movement (if they exist)
-            if (this.cursors) {
+            //Handle player movement (if they exist AND are not dead)
+            if (this.cursors && !this.isPlayerDead) {
                 const { left, right, up, down } = this.cursors;
 
                 // Set player velocity only if the player still exists and has a body
@@ -704,36 +704,43 @@ class Play extends Phaser.Scene {
             this.edgeFader.setDepth(900); // Set depth above player/NPCs but below messages/Age/Healthbar
         }
 
-        //Quieten the music if the player goes near the edge
-        if (this.player && window.bgMusic && window.staticSound && !this.musicFadingOut) {
-            // Calculate how far the player is from the edges
-            const distanceToLeft = Math.max(0, playerX - 100); // 100 pixels from the left
-            const distanceToRight = Math.max(0, 800 - 100 - playerX); // 100 pixels from the right
-            const distanceToTop = Math.max(0, playerY - 75); // 75 pixels from the top
-            const distanceToBottom = Math.max(0, 600 - 75 - playerY); // 75 pixels from the bottom
+        // Add audio update counter
+        if (!this.audioUpdateCounter) this.audioUpdateCounter = 0;
+        this.audioUpdateCounter++;
 
-            // Find the minimum distance to any edge
-            const minDistance = Math.min(distanceToLeft, distanceToRight, distanceToTop, distanceToBottom);
+        // Only update audio every 10 frames instead of every frame
+        if (this.audioUpdateCounter % 10 === 0) {
+            //Quieten the music if the player goes near the edge
+            if (this.player && window.bgMusic && window.staticSound && !this.musicFadingOut) {
+                // Calculate how far the player is from the edges
+                const distanceToLeft = Math.max(0, playerX - 100);
+                const distanceToRight = Math.max(0, 800 - 100 - playerX);
+                const distanceToTop = Math.max(0, playerY - 75);
+                const distanceToBottom = Math.max(0, 600 - 75 - playerY);
 
-            // Normalize the distance for music volume (0 = fully quiet, 1 = fully clear)
-            const musicVolumeFactor = Phaser.Math.Clamp(minDistance / 150, 0.05, 1);
+                // Find the minimum distance to any edge
+                const minDistance = Math.min(distanceToLeft, distanceToRight, distanceToTop, distanceToBottom);
 
-            // Inverse of normalized distance for static volume (0 = fully loud, 1 = silent)
-            const staticVolumeFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 1);
+                // Normalize the distance for music volume
+                const musicVolumeFactor = Phaser.Math.Clamp(minDistance / 150, 0.05, 1);
 
-            // Amplify static volume to make it more noticeable
-            const amplifiedStaticVolume = staticVolumeFactor * 6; // Increase multiplier as needed
+                // Inverse of normalized distance for static volume
+                const staticVolumeFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 1);
 
-            // Set the volumes
-            window.bgMusic.setVolume(musicVolumeFactor);
-            window.staticSound.setVolume(Phaser.Math.Clamp(amplifiedStaticVolume, 0, 1)); // Ensure it stays within 0-1
+                // Amplify static volume
+                const amplifiedStaticVolume = staticVolumeFactor * 6;
 
-            //Normalize the fading if you go near the edge effect
-            const visualAlphaFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 0.9); // Max opacity = 0.9
+                // Set the volumes
+                window.bgMusic.setVolume(musicVolumeFactor);
+                window.staticSound.setVolume(Phaser.Math.Clamp(amplifiedStaticVolume, 0, 1));
 
-            // Set visual fade opacity
-            if (this.edgeFader) {
-                this.edgeFader.setAlpha(visualAlphaFactor);
+                //Normalize the fading effect
+                const visualAlphaFactor = Phaser.Math.Clamp(1 - minDistance / 150, 0, 0.9);
+
+                // Set visual fade opacity
+                if (this.edgeFader) {
+                    this.edgeFader.setAlpha(visualAlphaFactor);
+                }
             }
         }
     }
