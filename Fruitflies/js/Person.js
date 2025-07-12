@@ -163,7 +163,8 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
-
+        // Don't update if dying
+        if (this.isDying) return;
         this.setAnimation();
 
         //Check shadow exists then make the shadow follow the person
