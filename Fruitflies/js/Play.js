@@ -460,9 +460,6 @@ class Play extends Phaser.Scene {
                 return; // Exit early, this NPC won't die this time
             }
 
-            // MARK NPC AS DYING - add this flag to prevent update() from interfering
-            child.isDying = true;
-
             //stop them moving
             child.setVelocity(0, 0);
 
@@ -477,9 +474,6 @@ class Play extends Phaser.Scene {
                 child.directionTimer.remove(false);
                 child.directionTimer = null;
             }
-
-            // IMMEDIATELY REMOVE FROM PEOPLE GROUP to prevent update() calls
-            this.people.remove(child, false, false); // Remove but don't destroy yet
 
             // Add the looking forward sprite
             const surprisedLook = this.physics.add.sprite(x, y, 'person')
