@@ -7,6 +7,7 @@ class Person extends Phaser.Physics.Arcade.Sprite {
         this.player = player;
         this.shunningCheck = shunningCheck;
         this.shadowVisible = true; // Add flag to control shadow visibility independently
+        this.updateCounter = Math.floor(Math.random() * 10); // Slower updates to optimise
     }
 
     setup() {
@@ -163,6 +164,9 @@ class Person extends Phaser.Physics.Arcade.Sprite {
     }
 
     update() {
+        // Only update every 10 frames instead of every frame
+        this.updateCounter++;
+        if (this.updateCounter % 10 !== 0) return;
 
         this.setAnimation();
 

@@ -7,9 +7,20 @@ class Play extends Phaser.Scene {
         this.shunningIsHappening = false; //Set the player as not being shunned at first
         this.reduceHealthTimer = null; //A timer to control health reduction so it's not too quick
         this.frameCounter = 0; // Set up frame counter (need this to slow health reduction)
+
+        //Cache for distance calculations
+        this.distanceCache = {
+            lastPlayerX: 0,
+            lastPlayerY: 0,
+            cachedDistances: {},
+            cacheValidFrames: 0
+        };
     }
 
     create() {
+
+        this.game.loop.targetFps = 30;  //slower frame rate instead of default 60 to optimise
+
         this.cursors = this.input.keyboard.createCursorKeys();
 
         this.image = this.add.image(400, 300, 'border');
@@ -445,19 +456,41 @@ class Play extends Phaser.Scene {
             const minDistance = 70; // Minimum distance between graves 
             let tooClose = false;
 
-            // Check distance to all existing graves
             if (this.graves) {
-                this.graves.getChildren().forEach(grave => {
-                    const distance = Phaser.Math.Distance.Between(x, y, grave.x, grave.y);
-                    if (distance < minDistance) {
-                        tooClose = true;
+                // Only recalculate if we haven't done it recently for this position
+                const posKey = `${Math.floor(x / 10)}_${Math.floor(y / 10)}`;
+
+                if (!this.distanceCache.cachedDistances[posKey]) {
+                    this.graves.getChildren().forEach(grave => {
+                        const distance = Phaser.Math.Distance.Between(x, y, grave.x, grave.y);
+                        if (distance < minDistance) {
+                            tooClose = true;
+                        }
+                    });
+
+                    // Cache the result for 60 frames
+                    this.distanceCache.cachedDistances[posKey] = { tooClose, frame: this.frameCounter };
+                } else {
+                    // Use cached result if it's recent
+                    const cached = this.distanceCache.cachedDistances[posKey];
+                    if (this.frameCounter - cached.frame < 60) {
+                        tooClose = cached.tooClose;
+                    } else {
+                        // Recalculate if cache is stale
+                        delete this.distanceCache.cachedDistances[posKey];
+                        this.graves.getChildren().forEach(grave => {
+                            const distance = Phaser.Math.Distance.Between(x, y, grave.x, grave.y);
+                            if (distance < minDistance) {
+                                tooClose = true;
+                            }
+                        });
+                        this.distanceCache.cachedDistances[posKey] = { tooClose, frame: this.frameCounter };
                     }
-                });
+                }
             }
 
-            // If too close to existing graves, skip this NPC and try again later
             if (tooClose) {
-                return; // Exit early, this NPC won't die this time
+                return;
             }
 
             //stop them moving
@@ -531,32 +564,43 @@ class Play extends Phaser.Scene {
             playerY = this.player.y;
         }
 
-        // Add null check for people group
+        // OPTIMIZED: Only update people every 3 frames and in batches
         if (this.player && this.people) {
-            // Update each person
-            this.people.getChildren().forEach(person => {
-                person.update();
-            });
+            const children = this.people.getChildren();
+            const frameOffset = this.frameCounter % 3;
+            const batchSize = Math.ceil(children.length / 3);
+
+            // Update only 1/3 of NPCs each frame
+            const startIndex = frameOffset * batchSize;
+            const endIndex = Math.min(startIndex + batchSize, children.length);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (children[i]) {
+                    children[i].update();
+                }
+            }
         }
 
-        // MOVED OUTSIDE: Set the people depth to the y value (should work even when player is dead)
-        // Add null check here too
-        if (this.people) {
+        // OPTIMIZED: Only update depths every 5 frames
+        if (this.people && this.frameCounter % 5 === 0) {
             this.people.getChildren().forEach((sprite) => {
-                sprite.setDepth(sprite.y);
+                if (sprite && sprite.active) {
+                    sprite.setDepth(sprite.y);
+                }
             });
         }
 
-        // Only carry on if the player exists
+        // Only continue if player exists
         if (this.player) {
-
-            //Make the shadow follow the player if alive
+            // Make the shadow follow the player if alive
             if (this.shadow) {
                 this.shadow.setPosition(playerX + 38, playerY + 26);
             }
 
-            // Set the player depth to the y value
-            this.player.setDepth(playerY);
+            // Set the player depth to the y value (only every 5 frames)
+            if (this.frameCounter % 5 === 0) {
+                this.player.setDepth(playerY);
+            }
 
             // Make the view sprite follow the position of the player
             if (this.view) {
@@ -564,8 +608,8 @@ class Play extends Phaser.Scene {
                 this.view.y = playerY + 45;
             }
 
-            // Only do triangle/overlap detection if view exists
-            if (this.view && this.triangle && this.graphics) {
+            // OPTIMIZED: Only update triangle graphics every 3 frames
+            if (this.view && this.triangle && this.graphics && this.frameCounter % 3 === 0) {
                 // Define the base triangle shape
                 const baseX1 = -70;
                 const baseY1 = 190;
@@ -589,32 +633,28 @@ class Play extends Phaser.Scene {
                 // Update the triangle's vertices
                 this.triangle.setTo(x1, y1, x2, y2, x3, y3);
 
-                // Clear and redraw the triangle for debugging
+                // Clear and redraw the triangle for debugging (less frequently)
                 this.graphics.clear();
-                this.graphics.fillStyle(0xffff00, 0); //second number is alpha value
+                this.graphics.fillStyle(0xffff00, 0);
                 this.graphics.fillTriangleShape(this.triangle);
-
-                // Set no overlap at first
-                let overlapDetected = false;
-
-                // Check for overlap with graves - add null check for graves group
-                if (this.graves) {
-                    this.graves.getChildren().forEach(grave => {
-                        const graveBounds = grave.getBounds();
-
-                        // Check if the triangle intersects the grave's bounding rectangle
-                        if (Phaser.Geom.Intersects.RectangleToTriangle(graveBounds, this.triangle)) {
-                            this.onViewOverlap(this.view, grave);
-                            overlapDetected = true; // Overlap found
-                        }
-                    });
-                }
-
-                // If no overlap was detected, reset the shunning state
-                if (!overlapDetected) {
-                    this.shunningIsHappening = false;
-                }
             }
+
+            // Collision detection still runs every frame for responsiveness
+            let overlapDetected = false;
+            if (this.graves && this.triangle) {
+                this.graves.getChildren().forEach(grave => {
+                    const graveBounds = grave.getBounds();
+                    if (Phaser.Geom.Intersects.RectangleToTriangle(graveBounds, this.triangle)) {
+                        this.onViewOverlap(this.view, grave);
+                        overlapDetected = true;
+                    }
+                });
+            }
+
+            if (!overlapDetected) {
+                this.shunningIsHappening = false;
+            }
+
 
             //Counting frames to reduce speed of health reduction if shunning is happening
             if (this.shunningIsHappening) {
