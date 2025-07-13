@@ -7,6 +7,12 @@ class Boot extends Phaser.Scene {
 
     preload() {
 
+        //My numbers spritesheet
+        this.load.spritesheet('numbers', 'assets/images/numbers.png', {
+            frameWidth: 32,  // Width of each number
+            frameHeight: 32  // Height of each number
+        });
+
         //Load the background music
         this.load.audio(`bgMusic`, `assets/sounds/Spencer_Adams_No_Use_Crying_1922.mp3`,);
 

@@ -87,13 +87,13 @@ class Play extends Phaser.Scene {
     playerLife() {
         this.timerValue = 0;
 
-        // Create a text object to display the timer
-        this.timerText = this.add.text(100, 44, `${this.timerValue}`, {
-            fontSize: '40px',
-            fill: '#000000',
-        }).setDepth(1001);
+        // Create a group to hold the number sprites
+        this.timerDisplay = this.add.group();
 
-        // Set up a timer that increments the timerValue every sec
+        // Create the initial display
+        this.updateTimerDisplay();
+
+        // Set up the timer
         this.timerEvent = this.time.addEvent({
             delay: 800,
             callback: this.incrementTimer,
@@ -101,12 +101,38 @@ class Play extends Phaser.Scene {
             loop: true
         });
     }
+
+    updateTimerDisplay() {
+        // Clear existing number sprites
+        this.timerDisplay.clear(true, true);
+
+        // Convert timer value to string and pad with zero if needed
+        const timerString = this.timerValue.toString().padStart(2, '0');
+
+        // Create sprites for each digit
+        for (let i = 0; i < timerString.length; i++) {
+            const digit = parseInt(timerString[i]);
+            const numberSprite = this.add.sprite(
+                112 + (i * 25), // X position 
+                61,             // Y position
+                'numbers',      // Spritesheet key
+                digit           // Frame number (0-9)
+            );
+
+            numberSprite.setDepth(1001);
+            numberSprite.setScale(1); // Adjust scale as needed
+            numberSprite.setTint(0x000000); // Make them black
+
+            // Add to the group
+            this.timerDisplay.add(numberSprite);
+        }
+    }
+
     incrementTimer() {
         if (this.timerValue < 99) {
             this.timerValue += 1;
-            this.timerText.setText(`${this.timerValue}`);
+            this.updateTimerDisplay(); // Update the sprite display
         } else {
-            // Stop the Life timer when it reaches 99
             this.timerEvent.remove();
             this.playerDeath();
         }
@@ -310,6 +336,12 @@ class Play extends Phaser.Scene {
         if (this.timerText) {
             this.timerText.destroy();
             this.timerText = null;
+        }
+        // Clean up timer display
+        if (this.timerDisplay) {
+            this.timerDisplay.clear(true, true);
+            this.timerDisplay.destroy();
+            this.timerDisplay = null;
         }
 
         // Clean up player and related objects
