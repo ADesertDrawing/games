@@ -374,6 +374,14 @@ class Play extends Phaser.Scene {
             this.people = null;
         }
 
+        // Clean up death timers
+        if (this.deathTimers) {
+            this.deathTimers.forEach(timer => {
+                if (timer) timer.remove();
+            });
+            this.deathTimers = [];
+        }
+
         // Clean up graves group
         if (this.graves) {
             this.graves.clear(true, true); // Remove and destroy all children
@@ -479,6 +487,9 @@ class Play extends Phaser.Scene {
 
     onEvent() {
         const child = Phaser.Utils.Array.GetRandom(this.people.getChildren());
+        if (child && child.isDying) {
+            return; // Skip if already dying
+        }
         if (child) {
             //Grab the x and y of the disappearing person
             const x = child.x;
@@ -530,6 +541,7 @@ class Play extends Phaser.Scene {
 
             // Hide them but keep their shadow visible during the entire death sequence
             child.setVisible(false);
+            child.isDying = true; // Mark as dying
 
             // Store reference to the shadow so we can control it independently
             const personShadow = child.shadow;
@@ -557,7 +569,9 @@ class Play extends Phaser.Scene {
                     .play(`blinkgif`);
 
                 //Another 1.5s delay before removing the blink sprite
-                this.time.delayedCall(1500, () => {
+                if (!this.deathTimers) this.deathTimers = [];
+
+                const deathTimer = this.time.delayedCall(1500, () => {
                     // Remove the blink sprite
                     blinkSprite.destroy();
 
@@ -575,13 +589,17 @@ class Play extends Phaser.Scene {
                         .setDepth(y);
 
                     //Add it to the graves group
-                    this.graves.add(graveSprite);
+                    if (this.graves) { // Add safety check
+                        this.graves.add(graveSprite);
+                    }
 
                     //add image of grave shadow
                     this.add.image(x + 32, y + 22, 'graveshadow')
                         .setScale(0.15)
                         .setDepth(-10);
                 });
+
+                this.deathTimers.push(deathTimer);
             });
         }
     }
