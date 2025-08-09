@@ -9,6 +9,7 @@ let config = {
     width: 800,
     height: 600,
     backgroundColor: `#ffffff`,
+
     physics: {
         default: `arcade`,
         arcade: {
@@ -16,7 +17,10 @@ let config = {
             debug: false //see collision boxes if true
         }
     },
-    scene: [Boot, Title, Instructions, BigPlayerIntro, Play]
+    scene: [Boot, Title, Instructions, BigPlayerIntro, Play],
+    input: {
+        gamepad: true
+    }
 };
 
 let game = new Phaser.Game(config);

@@ -22,6 +22,18 @@ class Play extends Phaser.Scene {
         this.game.loop.targetFps = 30;  //slower frame rate instead of default 60 to optimise
 
         this.cursors = this.input.keyboard.createCursorKeys();
+        ////////////////////////////////////
+        if (this.input.gamepad.total > 0) {
+            this.pad = this.input.gamepad.gamepads[0];
+            console.log('Gamepad already connected:', this.pad.id);
+        } else {
+            this.input.gamepad.once('connected', pad => {
+                console.log('Gamepad connected:', pad.id);
+                this.pad = pad;
+            });
+        }
+
+        /////////////////////////////////////
 
         this.image = this.add.image(400, 300, 'border');
         this.image = this.add.image(85, 60, 'Age').setDepth(1000).setScale(0.16);
@@ -725,67 +737,97 @@ class Play extends Phaser.Scene {
                 this.reduceHealthTimer.remove();
                 this.reduceHealthTimer = null;
             }
-
+            //////////////////////////////////////////
             //Handle player movement (if they exist AND are not dead)
-            if (this.cursors && !this.isPlayerDead) {
-                const { left, right, up, down } = this.cursors;
-
-                // Set player velocity only if the player still exists and has a body
-                if (this.player.body) {
-                    this.player.setVelocity(0, 0);
-
-                    if (left.isDown) {
-                        this.player.setVelocityX(-200);
-                    }
-                    else if (right.isDown) {
-                        this.player.setVelocityX(200);
-                    }
-
-                    if (up.isDown) {
-                        this.player.setVelocityY(-200);
-                    }
-                    else if (down.isDown) {
-                        this.player.setVelocityY(200);
-                    }
-
-                    const { x, y } = this.player.body.velocity;
-
-                    // Up, down, left, right movement
-                    if (x < 0) {
-                        this.player.play('left', true);
-                        if (this.view) this.view.rotation = 1.5;
-                    }
-                    else if (x > 0) {
-                        this.player.play('right', true);
-                        if (this.view) this.view.rotation = -1.5;
-                    }
-                    if (y < 0) {
-                        this.player.play('up', true);
-                        if (this.view) this.view.rotation = 3.15;
-                    }
-                    else if (y > 0) {
-                        this.player.play('down', true);
-                        if (this.view) this.view.rotation = 0;
-                    }
-                    // Diagonal movement
-                    if (x < 0 && y > 0) {
-                        this.player.play('downleft', true);
-                        if (this.view) this.view.rotation = 0.75;
-                    }
-                    if (x > 0 && y < 0) {
-                        this.player.play('upright', true);
-                        if (this.view) this.view.rotation = -2.25;
-                    }
-                    if (x > 0 && y > 0) {
-                        this.player.play('downright', true);
-                        if (this.view) this.view.rotation = -0.75;
-                    }
-                    if (x < 0 && y < 0) {
-                        this.player.play('upleft', true);
-                        if (this.view) this.view.rotation = 2.25;
-                    }
-                }
+            if (!this.player || this.isPlayerDead) {
+                return;
             }
+
+            // Get keyboard cursor states
+            const leftKey = this.cursors.left.isDown;
+            const rightKey = this.cursors.right.isDown;
+            const upKey = this.cursors.up.isDown;
+            const downKey = this.cursors.down.isDown;
+
+            // Get gamepad states safely
+            const pad = this.pad;
+            let leftPad = false, rightPad = false, upPad = false, downPad = false;
+
+            if (pad) {
+                // Simple deadzone to ignore small axis noise
+                const deadzone = 0.3;
+
+                // Axes usually: axis 0 = horizontal, axis 1 = vertical
+                const axisH = pad.axes.length > 0 ? pad.axes[0].getValue() : 0;
+                const axisV = pad.axes.length > 1 ? pad.axes[1].getValue() : 0;
+
+                leftPad = axisH < -deadzone;
+                rightPad = axisH > deadzone;
+                upPad = axisV < -deadzone;
+                downPad = axisV > deadzone;
+
+                // Also check dpad buttons for gamepads that support it
+                leftPad = leftPad || pad.left;
+                rightPad = rightPad || pad.right;
+                upPad = upPad || pad.up;
+                downPad = downPad || pad.down;
+            }
+
+            // Combine keyboard and gamepad inputs
+            const leftPressed = leftKey || leftPad;
+            const rightPressed = rightKey || rightPad;
+            const upPressed = upKey || upPad;
+            const downPressed = downKey || downPad;
+
+            // Reset velocity each frame
+            this.player.setVelocity(0, 0);
+
+            if (leftPressed) {
+                this.player.setVelocityX(-200);
+            } else if (rightPressed) {
+                this.player.setVelocityX(200);
+            }
+
+            if (upPressed) {
+                this.player.setVelocityY(-200);
+            } else if (downPressed) {
+                this.player.setVelocityY(200);
+            }
+
+            // Play animations based on velocity (same as your original logic)
+            const vx = this.player.body.velocity.x;
+            const vy = this.player.body.velocity.y;
+
+            if (vx < 0 && vy === 0) {
+                this.player.play('left', true);
+                if (this.view) this.view.rotation = 1.5;
+            } else if (vx > 0 && vy === 0) {
+                this.player.play('right', true);
+                if (this.view) this.view.rotation = -1.5;
+            } else if (vy < 0 && vx === 0) {
+                this.player.play('up', true);
+                if (this.view) this.view.rotation = 3.15;
+            } else if (vy > 0 && vx === 0) {
+                this.player.play('down', true);
+                if (this.view) this.view.rotation = 0;
+            } else if (vx < 0 && vy > 0) {
+                this.player.play('downleft', true);
+                if (this.view) this.view.rotation = 0.75;
+            } else if (vx > 0 && vy < 0) {
+                this.player.play('upright', true);
+                if (this.view) this.view.rotation = -2.25;
+            } else if (vx > 0 && vy > 0) {
+                this.player.play('downright', true);
+                if (this.view) this.view.rotation = -0.75;
+            } else if (vx < 0 && vy < 0) {
+                this.player.play('upleft', true);
+                if (this.view) this.view.rotation = 2.25;
+            } else {
+                // No movement - stop animation or play idle frame
+                this.player.anims.stop();
+            }
+
+
         }
         // Create a white rectangle overlay to fade if you go to the edge if it doesn't exist
         if (!this.edgeFader) {
