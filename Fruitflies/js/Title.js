@@ -3,6 +3,8 @@ class Title extends Phaser.Scene {
         super({
             key: `title`
         });
+        // This will track the input state from the previous frame
+        this.wasPushedLastFrame = false;
     }
 
     preload() {
@@ -10,11 +12,20 @@ class Title extends Phaser.Scene {
     }
 
     create() {
+
+        // Resume the global animation manager
+        this.anims.resumeAll();
+
         this.image = this.add.image(400, 300, 'border');
-
         this.image = this.add.image(400, 250, 'fruitfliesTitle').setScale(.2);
-
         this.image = this.add.image(400, 470, 'fruitfliesName').setScale(.2);
+
+        ////////////CAN COMMENT OUT THIS PART FOR THE KEYBOARD VERSION
+        //  Add joystick anim
+        this.joystick = this.add.sprite(700, 500, 'joystick').play('joystick_anim');
+        this.joystick.setDepth(10);
+        this.joystick.setScale(0.5);
+        /////////////////////////////////////////
 
         // Listen for key press or mouse click to go to instructions
         this.input.keyboard.on('keydown', () => {
@@ -37,23 +48,27 @@ class Title extends Phaser.Scene {
     }
 
     update() {
-
-        // Check if any directional button is pressed
         if (this.pad) {
             const threshold = 0.5;
             const axisX = this.pad.axes[0]?.getValue() || 0;
             const axisY = this.pad.axes[1]?.getValue() || 0;
 
-            if (
-                this.pad.buttons[0]?.pressed || // button press
-                Math.abs(axisX) > threshold || // stick moved left/right
-                Math.abs(axisY) > threshold    // stick moved up/down
-            ) {
-                this.scene.start('instructions');
+            // Check if any button or the stick is currently pushed
+            const isPushedNow = this.pad.buttons[0]?.pressed ||
+                Math.abs(axisX) > threshold ||
+                Math.abs(axisY) > threshold;
+
+            // ADVANCE CONDITION: Only if it's pushed now AND it wasn't pushed last frame.
+            if (isPushedNow && !this.wasPushedLastFrame) {
+                // Pass data to the next scene to tell it the input was just used.
+                this.scene.start('instructions', { inputUsed: true });
             }
 
+            // IMPORTANT: Update the state for the next frame at the end of the loop.
+            this.wasPushedLastFrame = isPushedNow;
         }
     }
 }
+
 
 

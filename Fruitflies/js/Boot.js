@@ -13,6 +13,12 @@ class Boot extends Phaser.Scene {
             frameHeight: 32  // Height of each number
         });
 
+        //My joystick spritesheet
+        this.load.spritesheet('joystick', 'assets/images/joystick_sprite.png', {
+            frameWidth: 148,  // Width of each number
+            frameHeight: 150  // Height of each number
+        });
+
         //Load the background music
         this.load.audio(`bgMusic`, `assets/sounds/Spencer_Adams_No_Use_Crying_1922.mp3`,);
 
@@ -169,6 +175,13 @@ class Boot extends Phaser.Scene {
         let loadingString = `Loading…`;
         this.add.text(100, 100, loadingString, style);
 
+        // Create joystick animation ONCE globally
+        this.anims.create({
+            key: 'joystick_anim',
+            frames: this.anims.generateFrameNumbers('joystick', { start: 0, end: 1 }),
+            frameRate: 2,
+            repeat: -1
+        });
 
     }
 
