@@ -166,6 +166,11 @@ class Boot extends Phaser.Scene {
     }
 
     create() {
+        // Unlock audio on first interaction (works for mouse, keyboard, or gamepad)
+        this.input.once('pointerdown', () => this.sound.unlock());
+        this.input.keyboard.once('keydown', () => this.sound.unlock());
+        this.input.gamepad.once('down', () => this.sound.unlock());
+
         //Add Loading text
         let style = {
             fontFamily: 'sans-serif',
