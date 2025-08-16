@@ -60,6 +60,8 @@ class Title extends Phaser.Scene {
 
             // ADVANCE CONDITION: Only if it's pushed now AND it wasn't pushed last frame.
             if (isPushedNow && !this.wasPushedLastFrame) {
+
+                this.sound.resume();
                 // Pass data to the next scene to tell it the input was just used.
                 this.scene.start('instructions', { inputUsed: true });
             }

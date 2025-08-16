@@ -71,6 +71,8 @@ class Instructions extends Phaser.Scene {
 
             // ADVANCE CONDITION: Only if it's pushed now AND it wasn't pushed last frame.
             if (isPushedNow && !this.wasPushedLastFrame) {
+
+                this.sound.resume();
                 this.scene.start('bigplayerintro');
             }
 
