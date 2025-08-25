@@ -15,8 +15,14 @@ class Boot extends Phaser.Scene {
 
         //My joystick spritesheet
         this.load.spritesheet('joystick', 'assets/images/joystick_sprite.png', {
-            frameWidth: 148,  // Width of each number
-            frameHeight: 150  // Height of each number
+            frameWidth: 148,  // Width of each frame
+            frameHeight: 150  // Height of each frame
+        });
+
+        //My button spritesheet
+        this.load.spritesheet('button', 'assets/images/button_anim.png', {
+            frameWidth: 100,  // Width of each frame
+            frameHeight: 142  // Height of each frame
         });
 
         //Load the background music
@@ -182,8 +188,8 @@ class Boot extends Phaser.Scene {
 
         // Create joystick animation ONCE globally
         this.anims.create({
-            key: 'joystick_anim',
-            frames: this.anims.generateFrameNumbers('joystick', { start: 0, end: 1 }),
+            key: 'button_anim',
+            frames: this.anims.generateFrameNumbers('button', { start: 0, end: 2 }),
             frameRate: 2,
             repeat: -1
         });

@@ -31,9 +31,9 @@ class Instructions extends Phaser.Scene {
 
         ////////////CAN COMMENT OUT THIS PART FOR THE KEYBOARD VERSION
         //Add joystick anim
-        this.joystick = this.add.sprite(700, 500, 'joystick').play('joystick_anim');
-        this.joystick.setDepth(10);
-        this.joystick.setScale(0.5);
+        this.button = this.add.sprite(700, 500, 'button').play('button_anim');
+        this.button.setDepth(10);
+        this.button.setScale(0.5);
         //////////////////////////////////////////////////////
 
         // Listen for key press or mouse click to go to Play
@@ -72,7 +72,7 @@ class Instructions extends Phaser.Scene {
             // ADVANCE CONDITION: Only if it's pushed now AND it wasn't pushed last frame.
             if (isPushedNow && !this.wasPushedLastFrame) {
 
-                this.sound.resume();
+                this.sound.unlock();
                 this.scene.start('bigplayerintro');
             }
 
